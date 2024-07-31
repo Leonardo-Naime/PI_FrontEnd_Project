@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import UsersReq from "@/services/APIs/allUsers"
 import DeleteUser from "@/services/APIs/deleteUser"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Trash2, User } from "lucide-react"
+import { Car, Trash2, User } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -72,6 +72,18 @@ const Control = () => {
                               >
                                 <User className="mr-2 h-4 w-4" />
                                 Ver perfil
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex p-0">
+                              <Link
+                                href={`/home/paineldecontrole/garagem/${object.id}`}
+                                className={cn(
+                                  buttonVariants({ variant: "ghost" }),
+                                  "w-full justify-start"
+                                )}
+                              >
+                                <Car className="mr-2 h-4 w-4" />
+                                Acessar garagem
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="flex p-0">
