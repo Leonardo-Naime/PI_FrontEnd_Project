@@ -5,12 +5,12 @@ import Header from "@/components/header/header"
 import VehicleCard from "@/components/vehicleCard/vehicleCard";
 import { AuthContext } from "@/contexts/authContext";
 import UserVehicle from "@/services/APIs/userVehicle";
-import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 const Garage = () => {
-    const router = useRouter();
-    const id = router.query.id; 
+    const params = useParams();
+    const id = params.id; 
     const [cars, setCars] = useState([])
     const [userLoaded, setUserLoaded] = useState(false);
     const { user } = useContext(AuthContext)
@@ -30,7 +30,7 @@ const Garage = () => {
           fetchCar();
         }
       }, [userLoaded, id]);
-      console.log('id:', id);
+      //console.log('id:', id);
 
 return (
   <div className="bg-[#EEEEEE] flex min-h-screen flex-col">

@@ -3,9 +3,7 @@ const nextConfig = {
     images: {
       domains: ['github.com', 'placehold.co']
     },
-    experimental: {
-      pagesDir: true
-    }
+      trailingSlash: true,
   };
   
   export default nextConfig;
