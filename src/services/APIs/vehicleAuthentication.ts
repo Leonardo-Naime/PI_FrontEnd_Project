@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const registrarVeiculo = async (
-    nome:string,
-    modelo:string,
-    marca:string,
     ano:string,
-    tempo:string,
-    preco:string,
     descricao:string,
+    nome:string,
     imagem:string,
+    marca:string,
+    modelo:string,
+    preco:string,
+    tempo:string,
     user:any
 ) => {
     try {

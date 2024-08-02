@@ -13,10 +13,9 @@ const Home = () => {
         <div>
           <Header></Header>
         </div>
-        <div className="bg-[#EEEEEE] flex flex-col justify-center items-center">
+        <div className="bg-[#EEEEEE] flex flex-col justify-center items-center h-60">
           <CarouselSize></CarouselSize>
         </div>
-        
         <div>
           <DefaultFooter></DefaultFooter>
         </div>
