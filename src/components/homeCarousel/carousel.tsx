@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
-import VehicleCard from "../vehicleCard/card"
+import VehicleCard from "../vehicleCard/vehicleCard"
 import {
   Carousel,
   CarouselContent,

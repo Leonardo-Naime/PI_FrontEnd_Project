@@ -23,9 +23,8 @@ const Header = () => {
     return (
       <main className="bg-[#FFFFFF] h-20 flex flex-row items-center justify-between px-4">
         <div className="w-28">
-          <Link href={'/home'}>
-          
-          <MountainIcon className="" size={28} />
+          <Link href={"/home"}>
+            <MountainIcon className="" size={28} />
           </Link>
         </div>
         {/* Gera os botões nomeados no array */}
@@ -84,9 +83,8 @@ const Header = () => {
                     className="w-full justify-start"
                   >
                     <Link href={"/home"}>
-                    
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Sair </span>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Sair </span>
                     </Link>
                   </Button>
                 </DropdownMenuItem>
