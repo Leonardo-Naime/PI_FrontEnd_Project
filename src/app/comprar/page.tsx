@@ -96,31 +96,31 @@ const Comprar = () => {
             <PaginationLink 
               href="#" 
               onClick={() => handlePageChange(pageNumber)} 
-              className="text-gray-600 border  border-gray-600"
+              className="text-black border  border-black"
             >
               {pageNumber + 1}
             </PaginationLink>
           </PaginationItem>
         );
-      } else if (pageNumber === currentPageNumber - 1 || pageNumber === currentPageNumber - 2) {
+      } else if (pageNumber === currentPageNumber - 1) {
         return (
           <PaginationItem key={pageNumber}>
             <PaginationLink 
               href="#" 
               onClick={() => handlePageChange(pageNumber)} 
-              className="text-gray-600"
+              className="text-black"
             >
               {pageNumber + 1}
             </PaginationLink>
           </PaginationItem>
         );
-      } else if (pageNumber === currentPageNumber + 1 || pageNumber === currentPageNumber + 2) {
+      } else if (pageNumber === currentPageNumber + 1) {
         return (
           <PaginationItem key={pageNumber}>
             <PaginationLink 
               href="#" 
               onClick={() => handlePageChange(pageNumber)} 
-              className="text-gray-600"
+              className="text-black"
             >
               {pageNumber + 1}
             </PaginationLink>
@@ -132,12 +132,12 @@ const Comprar = () => {
             <PaginationLink 
               href="#" 
               onClick={() => handlePageChange(pageNumber)} 
-              className="text-gray-600"
+              className="text-black"
             >
               1
             </PaginationLink>
-            {currentPageNumber > 3 && (
-              <span className="mx-2 text-gray-600">...</span>
+            {currentPageNumber > 2 && (
+              <span className="mx-2 text-black">...</span>
             )}
           </PaginationItem>
         );
@@ -145,12 +145,12 @@ const Comprar = () => {
         return (
           <PaginationItem key={pageNumber}>
             {currentPageNumber < totalPages - 3 && (
-              <span className="mx-2 text-gray-600">...</span>
+              <span className="mx-2 text-black">...</span>
             )}
             <PaginationLink 
               href="#" 
               onClick={() => handlePageChange(pageNumber)} 
-              className="text-gray-600"
+              className="text-black"
             >
               {totalPages}
             </PaginationLink>
