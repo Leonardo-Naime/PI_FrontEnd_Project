@@ -6,6 +6,15 @@ import VehicleCard from "@/components/vehicleCard/card";
 import allCars from "@/services/APIs/allVehicles";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 type Car = {
   id: string;
@@ -69,17 +78,99 @@ const Comprar = () => {
             )}
           </div>
         </div>
-        <div className="flex justify-center mb-10"> 
-            {Array.from({ length: totalPages }, (_, i) => i).map((pageNumber) => (
-            <button
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-              className={`mx-2 ${pageNumber === currentPageNumber ? ' text-black' : ' text-gray-500'}`}
+        <div className="flex justify-center mb-10">
+        <Pagination>
+  <PaginationContent>
+    {currentPageNumber > 0 && (
+      <PaginationItem>
+        <PaginationPrevious 
+          href="#" 
+          onClick={() => handlePageChange(currentPageNumber - 1)} 
+        />
+      </PaginationItem>
+    )}
+    {Array.from({ length: totalPages }, (_, i) => i).map((pageNumber) => {
+      if (pageNumber === currentPageNumber) {
+        return (
+          <PaginationItem key={pageNumber}>
+            <PaginationLink 
+              href="#" 
+              onClick={() => handlePageChange(pageNumber)} 
+              className="text-black border  border-black"
             >
-            {pageNumber + 1}
-            </button>
-            ))}
-        </div>
+              {pageNumber + 1}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      } else if (pageNumber === currentPageNumber - 1) {
+        return (
+          <PaginationItem key={pageNumber}>
+            <PaginationLink 
+              href="#" 
+              onClick={() => handlePageChange(pageNumber)} 
+              className="text-black"
+            >
+              {pageNumber + 1}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      } else if (pageNumber === currentPageNumber + 1) {
+        return (
+          <PaginationItem key={pageNumber}>
+            <PaginationLink 
+              href="#" 
+              onClick={() => handlePageChange(pageNumber)} 
+              className="text-black"
+            >
+              {pageNumber + 1}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      } else if (pageNumber === 0) {
+        return (
+          <PaginationItem key={pageNumber}>
+            <PaginationLink 
+              href="#" 
+              onClick={() => handlePageChange(pageNumber)} 
+              className="text-black"
+            >
+              1
+            </PaginationLink>
+            {currentPageNumber > 2 && (
+              <span className="mx-2 text-black">...</span>
+            )}
+          </PaginationItem>
+        );
+      } else if (pageNumber === totalPages - 1) {
+        return (
+          <PaginationItem key={pageNumber}>
+            {currentPageNumber < totalPages - 3 && (
+              <span className="mx-2 text-black">...</span>
+            )}
+            <PaginationLink 
+              href="#" 
+              onClick={() => handlePageChange(pageNumber)} 
+              className="text-black"
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      } else {
+        return null;
+      }
+    })}
+    {currentPageNumber < totalPages - 1 && (
+      <PaginationItem>
+        <PaginationNext 
+          href="#" 
+          onClick={() => handlePageChange(currentPageNumber + 1)} 
+        />
+      </PaginationItem>
+    )}
+  </PaginationContent>
+</Pagination>
+</div>
         <div>
           <DefaultFooter></DefaultFooter>
         </div>
