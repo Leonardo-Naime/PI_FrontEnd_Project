@@ -57,7 +57,7 @@ const Header = () => {
               <DropdownMenuContent className="bg-white">
                 <DropdownMenuItem className="flex ">
                   <Link
-                    href={`/home/paineldecontrole`}
+                    href={`/`}
                     className={cn(
                       buttonVariants({ variant: "ghost" }),
                       "w-full justify-start"
