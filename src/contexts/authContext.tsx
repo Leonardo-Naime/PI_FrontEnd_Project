@@ -37,7 +37,8 @@ const AuthProvider = ({ children }:any) => {
         const isUserLoggedIn = async () => {
 
                 const userInfo = await fetchMe();
-                setUser(userInfo)   
+                setUser(userInfo)
+                console.log(userInfo)   
 
  
 
