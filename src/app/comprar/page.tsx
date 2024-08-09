@@ -2,7 +2,7 @@
 
 import DefaultFooter from "@/components/footer/footer"
 import Header from "@/components/header/header"
-import VehicleCard from "@/components/vehicleCard/card";
+import VehicleCard from "@/components/vehicleCard/vehicleCard";
 import allCars from "@/services/APIs/allVehicles";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
