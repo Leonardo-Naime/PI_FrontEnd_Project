@@ -35,12 +35,10 @@ const AuthProvider = ({ children }:any) => {
 
     useEffect(() => {
         const isUserLoggedIn = async () => {
-
+                
                 const userInfo = await fetchMe();
                 setUser(userInfo)
                 console.log(userInfo)   
-
- 
 
         }
         isUserLoggedIn();
