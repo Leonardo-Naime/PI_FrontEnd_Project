@@ -3,6 +3,7 @@
 import Header from "@/components/header/header"
 import CarouselSize from "@/components/homeCarousel/carousel"
 import DefaultFooter from "@/components/footer/footer"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 
 const Home = () => {
@@ -13,8 +14,9 @@ const Home = () => {
         <div>
           <Header></Header>
         </div>
-        <div className="bg-[#EEEEEE] flex flex-col justify-center items-center h-60">
-          <CarouselSize></CarouselSize>
+        <div className="bg-[#EEEEEE] flex w-full justify-center h-full pt-4 pb-4">
+           <CarouselSize>
+            </CarouselSize>
         </div>
         <div>
           <DefaultFooter></DefaultFooter>
