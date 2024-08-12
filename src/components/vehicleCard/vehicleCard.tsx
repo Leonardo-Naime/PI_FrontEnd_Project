@@ -18,7 +18,7 @@ type Car = {
   user:any
 }
 
-const VehicleCard = ({vehicle, buttontitle}:{vehicle:Car, buttontitle:string}) => {
+const VehicleCard = ({vehicle}:{vehicle:Car}) => {
   const url = usePathname().split('/').pop() as string
   const garagem = "minhagaragem"
   const router = useRouter()
@@ -70,7 +70,7 @@ const VehicleCard = ({vehicle, buttontitle}:{vehicle:Car, buttontitle:string}) =
                     onClick={() => router.push(`/vehicle/${vehicle.id}`)}
                     className="bg-[#64BCED] w-32"
                   >
-                    Ver mais
+                    Sobre
                   </Button>
                 )}
               </div>

@@ -13,6 +13,7 @@ type Car = {
 }
 
 const VehicleReq = async (id: string) => {
+    console.log(id)
     try{
         const response = await axios.get("http://localhost:8080/anuncio/"+id)
         return response.data as unknown as Car

@@ -53,7 +53,7 @@ return (
       {cars.length > 0 ? (
         <div className="grid grid-cols-3 gap-10">
           {cars.map((car, index) => (
-            <VehicleCard key={index} vehicle={car} buttontitle={"Editar"}/>
+            <VehicleCard key={index} vehicle={car}/>
           ))}
         </div>
       ) : (
