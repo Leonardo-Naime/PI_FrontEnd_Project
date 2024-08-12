@@ -2,7 +2,7 @@
 
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
 import { MountainIcon, User, LogOut, Car, CarFront } from "lucide-react"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { Button, buttonVariants } from "../ui/button"
 import { AuthContext } from "@/contexts/authContext"
 import {
@@ -19,6 +19,10 @@ import { cn } from "@/lib/utils"
 const Header = () => {
     const navigation = ['Comprar', 'Vender', 'FIPE', 'Sobre']
     const { user, signOut } = useContext(AuthContext)
+
+    useEffect(() => {
+
+    }, [user])
 
     return (
       <main className="bg-[#FFFFFF] h-20 flex flex-row items-center justify-between px-4">

@@ -11,16 +11,18 @@ import { useContext } from "react"
 import { User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
+import ProfileChange from "@/services/APIs/profileChange";
 
-const handleChange = (data:any) => {
-  console.log(data)
-}
 
 const Perfil = () => {
   const [publicId, setPublicId] = useState<string>('');
   const {user} = useContext(AuthContext)
   const {register, handleSubmit} = useForm()
-
+  const handleChange = async (data:any) => {
+    await ProfileChange(user?.id, data)
+    console.log(data)
+  }
+  
   return (
     <main className="">
       <div className="">
@@ -57,7 +59,7 @@ const Perfil = () => {
             }}
           </CldUploadWidget>
         </div>
-        <form onSubmit={handleSubmit((data) => handleChange(data.nome))}>
+        <form onSubmit={handleSubmit((data) => handleChange(data))}>
           <div className="flex justify-center w-full">
             <Card className="w-[540px] mb-8">
               <CardContent>
