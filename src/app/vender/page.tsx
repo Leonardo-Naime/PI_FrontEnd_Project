@@ -1,49 +1,41 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { AuthContext } from "@/contexts/authContext"
-import registrarVeiculo from "@/services/APIs/vehicleAuthentication"
-import Link from "next/link"
-import { useContext } from "react"
-import { useForm } from "react-hook-form"
-import { CldUploadWidget } from 'next-cloudinary';
-import VehicleForm from "@/components/imageButton/widgetbutton"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AuthContext } from "@/contexts/authContext";
+import registrarVeiculo from "@/services/APIs/vehicleAuthentication";
+import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { CldUploadWidget } from "next-cloudinary";
+import { useRouter } from "next/navigation";
 
 type vehicleData = {
-    nome:string,
-    modelo:string,
-    marca:string,
-    ano:string,
-    tempo:string,
-    preco:string,
-    descricao:string,
-    imagem:string,
-    user:any
-}
-
-const handleImageUpload = (error:any, result:any) => {
-  if(error){
-    console.error('Upload error', error)
-    return;
-  }
-  console.log('Uploaded image:', result)
-}
+  nome: string;
+  modelo: string;
+  marca: string;
+  ano: string;
+  tempo: string;
+  preco: string;
+  descricao: string;
+  imagem: string;
+  user: any;
+};
 
 const CadastroVeiculo = () => {
-  const router = useRouter()
+  const [publicId, setPublicId] = useState<string[]>([]);
+  const router = useRouter();
   const ctxfunc = useContext(AuthContext);
   const user = ctxfunc.user;
   const { register, handleSubmit } = useForm<vehicleData>();
 
   const handleVehicle = async (data: vehicleData) => {
+    console.log(publicId)
     const response = await registrarVeiculo(
       data.ano,
       data.descricao,
       data.nome,
-      data.imagem,
+      publicId,
       data.marca,
       data.modelo,
       data.preco,
@@ -51,9 +43,10 @@ const CadastroVeiculo = () => {
       user
     );
     if (response.status === 200) {
-      router.push("/")
+      console.log(publicId)
+      router.push("/minhagaragem/");
     } else {
-      console.log("erro ao registrar veículo", response)
+      console.log("erro ao registrar veículo", response);
     }
   };
 
@@ -165,21 +158,37 @@ const CadastroVeiculo = () => {
             ></Input>
           </div>
         </div>
-        <div className="pb-4">
-          <div>
-            <Label className="block mb-2" htmlFor="imagem">
-              Imagem
-            </Label>
-            <Input
-              className="bg-[#EEEEEE]"
-              {...register("imagem")}
-              id="imagem"
-              placeholder="Foto"
-              name="imagem"
-            ></Input>
-          </div>
+        <div>
+          <CldUploadWidget uploadPreset="ml_default"
+          options={{
+            maxFiles: 10, 
+            maxFileSize: 10485760, 
+            multiple: true
+          }}>
+            {({ open, results, error }) => {
+              if (results?.event === "success") {
+                if (
+                  results?.info?.public_id &&
+                  !publicId.includes(results?.info?.public_id)
+                ) {
+                  setPublicId([...publicId, results?.info?.public_id]);
+                  console.log(publicId)
+                }
+              }
+              return (
+                <Button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    open();
+                  }}
+                >
+                  Upload an Image
+                </Button>
+              );
+            }}
+          </CldUploadWidget>
         </div>
-        <VehicleForm />
         <Button className="bg-[#64BCED]" type="submit">
           Confirmar
         </Button>
@@ -188,4 +197,4 @@ const CadastroVeiculo = () => {
   );
 };
 
-export default CadastroVeiculo
+export default CadastroVeiculo;

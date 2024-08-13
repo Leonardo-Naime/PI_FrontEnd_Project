@@ -18,6 +18,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 import CarouselSize from "@/components/homeCarousel/carousel";
+import { CldImage } from "next-cloudinary";
 
 type Car = {
     ano:string,
@@ -32,7 +33,8 @@ type Car = {
 }
 
 const BuyCar = () => {
-  const id = usePathname().split('/').pop() as string
+  const url = usePathname().split('/')
+  const id = url[url.length-2]
   const [Car, setCar] = useState<Car>()
 
   
@@ -49,7 +51,12 @@ const BuyCar = () => {
       <div>
         <Header></Header>
       </div>
-        <CarouselSize></CarouselSize>
+      <CldImage
+        width={340}
+        height={340}
+        src="perritos-amigos_yoqchq"
+        alt="Dogs"
+      />
       <div>
         <DefaultFooter></DefaultFooter>
       </div>
