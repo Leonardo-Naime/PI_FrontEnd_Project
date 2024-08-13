@@ -15,12 +15,20 @@ import ProfileChange from "@/services/APIs/profileChange";
 
 
 const Perfil = () => {
-  const [publicId, setPublicId] = useState<string>('');
+  const [imagePublicId, setPublicId] = useState<string>('');
   const {user} = useContext(AuthContext)
   const {register, handleSubmit} = useForm()
   const handleChange = async (data:any) => {
-    await ProfileChange(user?.id, data)
-    console.log(data)
+    const fulldata = {
+      nome: data?.nome,
+      email: data?.email,
+      senha: data?.senha,
+      confirmarSenha: data?.confirmarSenha,
+      fotoDePerfil: imagePublicId
+    };
+    await ProfileChange(user?.id, fulldata)
+    console.log(user?.id)
+    console.log(fulldata)
   }
   
   return (
@@ -28,7 +36,7 @@ const Perfil = () => {
       <div className="">
         <div className="bg-slate-200 w-full h-48 z-0 relative mb-16">
           <CldUploadWidget uploadPreset="ml_default">
-            {({ open, results, error }) => {
+            {({ open, results }) => {
               if (results?.event === "success") {
                 console.log("Uploaded image:", results.info);
                 setPublicId(results?.info?.public_id);
@@ -43,12 +51,12 @@ const Perfil = () => {
                     open();
                   }}
                 >
-                  {publicId ? (
+                  {user?.fotoDePerfil ? (
                     <CldImage
                       className="w-full h-full rounded-full border-none"
                       width={400}
                       height={400}
-                      src={publicId}
+                      src={user.fotoDePerfil}
                       alt="FotoDePerfil"
                     />
                   ) : (

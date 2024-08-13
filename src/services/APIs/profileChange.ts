@@ -9,8 +9,8 @@ type UserUpdate = {
 }
 
 const ProfileChange = async (idUser:any, UserUpdateDTO:UserUpdate) => {
+    console.log(UserUpdateDTO)
     try{
-        console.log(UserUpdateDTO.nome)
         const result = await axios.put("http://localhost:8080/User/"+idUser,{
             nome: UserUpdateDTO.nome,
             email: UserUpdateDTO.email,
