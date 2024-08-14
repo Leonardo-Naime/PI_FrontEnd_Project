@@ -16,7 +16,7 @@ import ProfileChange from "@/services/APIs/profileChange";
 
 const Perfil = () => {
   const [imagePublicId, setPublicId] = useState<string>('');
-  const {user} = useContext(AuthContext)
+  const {user, refreshUserData} = useContext(AuthContext)
   const {register, handleSubmit} = useForm()
   const handleChange = async (data:any) => {
     const fulldata = {
@@ -27,6 +27,7 @@ const Perfil = () => {
       fotoDePerfil: imagePublicId
     };
     await ProfileChange(user?.id, fulldata)
+    refreshUserData()
   }
   
   return (
