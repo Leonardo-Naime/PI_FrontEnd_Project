@@ -5,11 +5,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AuthContext } from "@/contexts/authContext"
 import registrarVeiculo from "@/services/APIs/vehicleAuthentication"
-import Link from "next/link"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
-import { CldUploadWidget } from 'next-cloudinary';
-import VehicleForm from "@/components/imageButton/widgetbutton"
+import VehicleImage from "@/components/imageButton/widgetbutton"
 
 type vehicleData = {
     nome:string,
@@ -162,7 +160,7 @@ const CadastroVeiculo = () => {
               ></Input>
             </div>
           </div>
-          <VehicleForm/>
+          <VehicleImage/>
           <Button className="bg-[#64BCED]" type="submit">
             Confirmar
           </Button>

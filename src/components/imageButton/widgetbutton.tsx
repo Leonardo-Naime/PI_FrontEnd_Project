@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { CldImage, CldUploadWidget } from 'next-cloudinary'; // Certifique-se de que o CldUploadWidget está importado corretamente
+import { CldUploadWidget } from 'next-cloudinary'; // Certifique-se de que o CldUploadWidget está importado corretamente
 import { Button } from '../ui/button';
-import Image from 'next/image';
 
-const VehicleForm = () => {
+const VehicleImage = () => {
   const [publicId, setPublicId] = useState<string>('');
 
   return (      
@@ -19,6 +18,7 @@ const VehicleForm = () => {
             }
             return (
               <Button
+                
                 type="button"
                 onClick={(e) => {
                   e.preventDefault(); // Impede o envio do formulário
@@ -35,4 +35,4 @@ const VehicleForm = () => {
   )
 };
 
-export default VehicleForm;
+export default VehicleImage;
