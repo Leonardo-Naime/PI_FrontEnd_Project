@@ -27,8 +27,6 @@ const Perfil = () => {
       fotoDePerfil: imagePublicId
     };
     await ProfileChange(user?.id, fulldata)
-    console.log(user?.id)
-    console.log(fulldata)
   }
   
   return (
@@ -38,13 +36,13 @@ const Perfil = () => {
           <CldUploadWidget uploadPreset="ml_default">
             {({ open, results }) => {
               if (results?.event === "success") {
-                console.log("Uploaded image:", results.info);
+                // console.log("Uploaded image:", results.info);
                 setPublicId(results?.info?.public_id);
-                console.log("Public ID:", results?.info?.public_id);
+                // console.log("Public ID:", results?.info?.public_id);
               }
               return (
                 <Button
-                  className="z-10 bg-black rounded-full w-32 h-32 absolute inset-x-0 bottom-0 transform translate-y-1/2 translate-x-10 border-none p-0"
+                  className="z-10 bg-[#64BCED] rounded-full w-32 h-32 absolute inset-x-0 bottom-0 transform translate-y-1/2 translate-x-10 border-none p-0"
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
@@ -60,7 +58,7 @@ const Perfil = () => {
                       alt="FotoDePerfil"
                     />
                   ) : (
-                    <User className="w-16 h-16"></User>
+                    <User className="w-16 h-16 "></User>
                   )}
                 </Button>
               );
@@ -106,7 +104,7 @@ const Perfil = () => {
                     ></Input>
                   </div>
                   <div className="flex justify-end">
-                    <Button>Finalizar</Button>
+                    <Button className="bg-[#64BCED] hover:bg-[#64BCED]">Finalizar</Button>
                   </div>
                 </div>
               </CardContent>

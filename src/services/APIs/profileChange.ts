@@ -9,13 +9,14 @@ type UserUpdate = {
 }
 
 const ProfileChange = async (idUser:any, UserUpdateDTO:UserUpdate) => {
-    console.log(UserUpdateDTO)
     try{
+        console.log("lomba", UserUpdateDTO.fotoDePerfil)
         const result = await axios.put("http://localhost:8080/User/"+idUser,{
             nome: UserUpdateDTO.nome,
             email: UserUpdateDTO.email,
             senha: UserUpdateDTO.senha,
-            confirmarSenha: UserUpdateDTO.confirmarSenha
+            confirmarSenha: UserUpdateDTO.confirmarSenha,
+            fotoDePerfil: UserUpdateDTO.fotoDePerfil
         })
         console.log(result)
         return result
