@@ -69,12 +69,12 @@ const BuyCar = () => {
         <Button
         onClick={handleClick}
         className={`transition-transform transform ${isFavorited ? 'bg-orange-500' : 'bg-red-500'} 
-          text-white px-4 py-2 rounded-full 
-          ${isFavorited ? 'animate-out hover:scale-105 hover:bg-orange-600' : 'animate-in hover:scale-105 hover:bg-red-700'}`}
-      >
+        text-white px-4 py-2 rounded-full 
+        ${isFavorited ? 'animate-out hover:scale-105 hover:bg-orange-600' : 'animate-in hover:scale-105 hover:bg-red-700'}`}
+        >
         {isFavorited ? (
           <>
-            <Flame className=""/> {"Favoritar"}
+            <Flame className=""/> {"Fodase"}
           </>
         ):('Desfavoritar')}
       </Button>
@@ -82,12 +82,12 @@ const BuyCar = () => {
         <Button
         onClick={handleClick}
         className={`transition-transform transform ${isFavorited ? 'bg-orange-500' : 'bg-red-500'} 
-          text-white px-4 py-2 rounded-full 
-          ${isFavorited ? 'animate-out hover:scale-105 hover:bg-orange-600' : 'animate-in hover:scale-105 hover:bg-red-700'}`}
-      >
+        text-white px-4 py-2 rounded-full 
+        ${isFavorited ? 'animate-out hover:scale-105 hover:bg-orange-600' : 'animate-in hover:scale-105 hover:bg-red-700'}`}
+        >
         {isFavorited ? (
           <>
-            <Flame className=""/> {"Fodase"}
+            <Flame className=""/> {"Favoritar"}
           </>
         ):('Desfavoritar')}
       </Button>
