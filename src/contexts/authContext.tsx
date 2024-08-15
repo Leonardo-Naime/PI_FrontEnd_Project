@@ -12,6 +12,7 @@ type UserData = {
     email: string,
     senha: string,
     confirmarSenha:string
+    fotoDePerfil?: string
 }
 
 type SignInData = {
@@ -24,14 +25,24 @@ type AuthContextType = {
     user: UserData | undefined;
     signIn: (data: SignInData) => void;
     signOut: () => void;
+    refreshUserData: () => void;
 }
 
 export const AuthContext = createContext({} as AuthContextType)
 
-
 const AuthProvider = ({ children }:any) => {
     const [user, setUser] = useState<UserData | undefined>(undefined)
     const isAuthenticated = !!user;
+
+    const refreshUserData = async () => {
+        try {
+          const userInfo = await fetchMe();
+          setUser(userInfo);
+        } catch (error) {
+          console.error("Failed to refresh user data", error);
+          await signOut();
+        }
+      };
 
     useEffect(() => {
         const isUserLoggedIn = async () => {
@@ -48,7 +59,6 @@ const AuthProvider = ({ children }:any) => {
             password,
         )
         const {token, user} = response.data
-
         setCookie(undefined, 'token', token, {
             maxAge: 60*60*1, //1 hour
         })
@@ -62,7 +72,7 @@ const AuthProvider = ({ children }:any) => {
     }
 
     return (
-        <AuthContext.Provider value={{user, signIn, isAuthenticated, signOut}}>
+        <AuthContext.Provider value={{user, signIn, isAuthenticated, signOut, refreshUserData}}>
             {children}
         </AuthContext.Provider>
     )
