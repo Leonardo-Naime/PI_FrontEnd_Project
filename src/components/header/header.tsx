@@ -1,8 +1,8 @@
 "use client"
 
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
-import { MountainIcon, User, LogOut, Car, CarFront, Cctv } from "lucide-react"
-import { useContext } from "react"
+import { MountainIcon, User, LogOut, Car, CarFront, Cctv} from "lucide-react"
+import { useContext, useEffect } from "react"
 import { Button, buttonVariants } from "../ui/button"
 import { AuthContext } from "@/contexts/authContext"
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/avatar"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { CldImage } from "next-cloudinary"
 
 
 
@@ -19,6 +20,10 @@ import { cn } from "@/lib/utils"
 const Header = () => {
     const navigation = ['Comprar', 'Vender', 'FIPE', 'Sobre']
     const { user, signOut } = useContext(AuthContext)
+
+    useEffect(() => {
+
+    }, [user])
 
     return (
       <main className="bg-[#FFFFFF] h-20 flex flex-row items-center justify-between px-4">
@@ -48,10 +53,19 @@ const Header = () => {
                   variant={"link"}
                 >
                   <div className="absolute right-16">{user?.nome}</div>
-                  <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
+                  {user.fotoDePerfil ? (
+                    <CldImage
+                      className="w-10 h-10 rounded-full border-none"
+                      width={400}
+                      height={400}
+                      src={user.fotoDePerfil || ''}
+                      alt="FotoDePerfil"
+                    />
+                  ):(
+                    <div className="w-10 h-10 rounded-full bg-[#64BCED] items-center flex justify-center">
+                      <User className="w-5 h-5 rounded-full bg-transparent" color="white"></User>
+                    </div>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white">
@@ -69,7 +83,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex ">
                   <Link
-                    href={`/`}
+                    href={`/perfil`}
                     className={cn(
                       buttonVariants({ variant: "ghost" }),
                       "w-full justify-start"
