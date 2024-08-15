@@ -35,13 +35,9 @@ const AuthProvider = ({ children }:any) => {
 
     useEffect(() => {
         const isUserLoggedIn = async () => {
-
                 const userInfo = await fetchMe();
                 setUser(userInfo)
-                console.log(userInfo)   
-
- 
-
+                // console.log(userInfo)   
         }
         isUserLoggedIn();
     }, [])
@@ -56,11 +52,8 @@ const AuthProvider = ({ children }:any) => {
         setCookie(undefined, 'token', token, {
             maxAge: 60*60*1, //1 hour
         })
-
         api.defaults.headers['Authorization'] = `Bearer ${token}`;
-
         setUser(user)
-
     }
 
     const signOut = async () => {

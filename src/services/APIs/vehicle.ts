@@ -3,8 +3,8 @@ import axios from "axios";
 type Car = {
     ano:string,
     descricao:string,
-    nome:string,
-    imagem:string,
+    nomeDoAutomovel:string,
+    imageUrl:string[],
     marca:string,
     modelo:string,
     preco:string,
@@ -15,6 +15,7 @@ type Car = {
 const VehicleReq = async (id: string) => {
     try{
         const response = await axios.get("http://localhost:8080/anuncio/"+id)
+        console.log(response)
         return response.data as unknown as Car
     } catch(error) {
         console.log(error)
