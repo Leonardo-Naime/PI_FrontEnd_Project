@@ -1,7 +1,7 @@
 "use client"
 
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
-import { MountainIcon, User, LogOut, Car, CarFront } from "lucide-react"
+import { MountainIcon, User, LogOut, Car, CarFront, Cctv} from "lucide-react"
 import { useContext, useEffect } from "react"
 import { Button, buttonVariants } from "../ui/button"
 import { AuthContext } from "@/contexts/authContext"
@@ -69,6 +69,18 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white">
+              <DropdownMenuItem className="flex ">
+                  <Link
+                    href={`/home/paineldecontrole`}
+                    className={cn(
+                      buttonVariants({ variant: "ghost" }),
+                      "w-full justify-start"
+                    )}
+                  >
+                    <Cctv className="mr-2 h-4 w-4" />
+                    Painel de Controle
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem className="flex ">
                   <Link
                     href={`/perfil`}
