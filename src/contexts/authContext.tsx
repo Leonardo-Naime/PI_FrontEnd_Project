@@ -46,10 +46,9 @@ const AuthProvider = ({ children }:any) => {
 
     useEffect(() => {
         const isUserLoggedIn = async () => {
-            const {token} = parseCookies();
-            if(token){
-                await refreshUserData()
-            }
+                const userInfo = await fetchMe();
+                setUser(userInfo)
+                // console.log(userInfo)   
         }
         isUserLoggedIn();
     }, [])
@@ -65,7 +64,6 @@ const AuthProvider = ({ children }:any) => {
         })
         api.defaults.headers['Authorization'] = `Bearer ${token}`;
         setUser(user)
-
     }
 
     const signOut = async () => {

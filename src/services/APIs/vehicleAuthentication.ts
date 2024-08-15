@@ -4,7 +4,7 @@ const registrarVeiculo = async (
     ano:string,
     descricao:string,
     nome:string,
-    imagem:string,
+    images:string[],
     marca:string,
     modelo:string,
     preco:string,
@@ -12,7 +12,7 @@ const registrarVeiculo = async (
     user:any
 ) => {
     try {
-        console.log(user)
+        console.log(images)
         const response = await axios.post('http://localhost:8080/anuncio',{
             marca:marca,
             modelo:modelo,
@@ -21,7 +21,7 @@ const registrarVeiculo = async (
             ano:ano,
             preco:preco,
             descricao:descricao,
-            imagemUrl:imagem,
+            imageUrl: images,
             user:{
                 id: user.id
              }

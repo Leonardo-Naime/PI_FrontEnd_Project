@@ -1,9 +1,9 @@
-import Image from "next/image"
 import { Card, CardContent } from "../ui/card"
-import { Button, buttonVariants } from "../ui/button";
-import { CalendarDays, CarFrontIcon, Gauge, Pencil, Trash2 } from "lucide-react";
+import { Button } from "../ui/button";
+import { CalendarDays, Gauge } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { CldImage } from "next-cloudinary";
 
 type Car = {
   id:string,
@@ -30,13 +30,11 @@ const VehicleCard = ({vehicle, buttontitle}:{vehicle:Car, buttontitle:string}) =
           <div className="">
             <div className="">
               <div onClick={() => router.push(`/vehicle/${vehicle.id}`)}>
-                <Image
-                  className=""
-                  src={"https://placehold.co/500x500/png"}
-                  alt="ImagemAutoral"
+                <CldImage
                   width={340}
                   height={340}
-                  priority={true}
+                  src="perritos-amigos_yoqchq"
+                  alt="Dogs"
                 />
               </div>
             </div>
