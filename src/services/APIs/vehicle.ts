@@ -8,7 +8,7 @@ type Car = {
     marca:string,
     modelo:string,
     preco:string,
-    tempo:string,
+    tempoDeUso:string,
     user:any
 }
 

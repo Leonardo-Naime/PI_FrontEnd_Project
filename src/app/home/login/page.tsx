@@ -23,6 +23,11 @@ const Login = () => {
       router.push('/home') 
     }
 
+    const imageLogin = [
+      "cerje1jk1w8zbepdkrlf"
+    ]
+    
+
     return (
       <div className="min-h-screen bg-[#f3f4f6] flex justify-between">
         <div className="w-full">

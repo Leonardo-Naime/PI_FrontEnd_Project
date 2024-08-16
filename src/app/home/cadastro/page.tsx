@@ -10,6 +10,11 @@ import registrarUsuario from "@/services/APIs/userRegistration"
 import Image from 'next/image'
 
 
+const imageCadastro = [
+  "ielajwasjtjqelvxz48g"
+]
+
+
 const Cadastro = () => {
     const router = useRouter();
     const { register, handleSubmit } = useForm();

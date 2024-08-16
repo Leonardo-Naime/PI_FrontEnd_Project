@@ -33,8 +33,8 @@ const VehicleCard = ({vehicle}:{vehicle:Car}) => {
                 <CldImage
                   width={340}
                   height={340}
-                  src="perritos-amigos_yoqchq"
-                  alt="Dogs"
+                  src={vehicle.imagemUrl}
+                  alt={vehicle.nomeDoAutomovel}
                 />
               </div>
             </div>

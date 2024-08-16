@@ -43,6 +43,8 @@ const CadastroVeiculo = () => {
   const [openBrand, setOpenBrand] = useState(false)
   const [openModel, setOpenModel] = useState(false)
   const [openYears, setOpenYears] = useState(false)
+  const [nameBrand, setNameBrand] = useState()
+  const [nameModel, setNameModel] = useState()
   const [brandValue, setBrandValue] = useState("")
   const [modelValue, setModelValue] = useState("")
   const [yearsValue, setYearsValue] = useState("")
@@ -103,14 +105,14 @@ const CadastroVeiculo = () => {
 
   const handleVehicle = async (data: vehicleData) => {
     const yearsIdValue = yearsId || "";
-    const brandIdValue = brandId || "";
-    const modelIdValue = modelId || "";
+    const nameBrandValue = nameBrand || "";
+    const nameModelValue = nameModel || "";
     const response = await registrarVeiculo(
       yearsIdValue,
       data.descricao,
       publicId,
-      brandIdValue,
-      modelIdValue,
+      nameBrandValue,
+      nameModelValue,
       data.preco,
       data.tempo,
       user
@@ -161,6 +163,7 @@ const CadastroVeiculo = () => {
                         key={index}
                         value={brands.codigo}
                         onSelect={(currentValue) => {
+                          setNameBrand(brands.nome)
                           setBrandValue(
                             currentValue === brandValue ? "" : currentValue
                           );
@@ -218,6 +221,7 @@ const CadastroVeiculo = () => {
                           key={model.codigo}
                           value={model.codigo}
                           onSelect={(currentValue) => {
+                            setNameModel(model.nome)
                             setModelValue(
                               currentValue === modelValue ? "" : currentValue
                             );

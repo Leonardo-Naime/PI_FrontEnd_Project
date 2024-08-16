@@ -7,14 +7,14 @@ const registrarVeiculo = async (
     marca:string,
     modelo:string,
     preco:string,
-    tempo:string,
+    tempoDeUso:string,
     user:any
 ) => {
     try {
         const response = await axios.post('http://localhost:8080/anuncio',{
             marca:marca,
             modelo:modelo,
-            tempoDeUso:tempo,
+            tempoDeUso:tempoDeUso,
             ano:ano,
             preco:preco,
             descricao:descricao,
