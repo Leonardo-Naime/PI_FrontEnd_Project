@@ -205,7 +205,7 @@ const BuyCar = () => {
             </CardTitle>
             <CardContent className="grid gap-4">
               <div className="flex justify-center">
-                {user?.id === Car?.user.id || user?.admState === "true"? (
+                {(user?.id === Car?.user.id )|| (user?.admState)? (
                   <Button
                     onClick={handleClick}
                     className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}

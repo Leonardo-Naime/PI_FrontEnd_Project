@@ -26,7 +26,8 @@ const Perfil = () => {
       confirmarSenha: data?.confirmarSenha,
       fotoDePerfil: imagePublicId
     };
-    await ProfileChange(user?.id, fulldata)
+    console.log(fulldata.fotoDePerfil)
+    await ProfileChange(user, fulldata)
     refreshUserData()
   }
   

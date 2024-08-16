@@ -13,10 +13,12 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Car, Trash2, User } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { CldImage } from "next-cloudinary"
 
 type User = {
   nome: string,
   email: string,
+  fotoDePerfil:string,
   id: string
 }
 
@@ -47,10 +49,19 @@ const Control = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div className="ml-10">
-                          <Avatar className="size-7">
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>CN</AvatarFallback>
-                          </Avatar>
+                        {object?.fotoDePerfil ? (
+                    <CldImage
+                      className="rounded-full border-none w-10 h-10"
+                      width={400}
+                      height={400}
+                      src={object.fotoDePerfil}
+                      alt="FotoDePerfil"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-[#64BCED] items-center flex justify-center">
+                      <User className="w-5 h-5 rounded-full bg-transparent" color="white"></User>
+                    </div>
+                  )}
                         </div>
                         <div className="ml-2">{object.nome}</div>
                       </div>
