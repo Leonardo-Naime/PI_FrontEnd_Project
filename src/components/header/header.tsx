@@ -5,11 +5,6 @@ import { MountainIcon, User, LogOut, Car, CarFront, Cctv} from "lucide-react"
 import { useContext, useEffect } from "react"
 import { Button, buttonVariants } from "../ui/button"
 import { AuthContext } from "@/contexts/authContext"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { CldImage } from "next-cloudinary"
@@ -20,10 +15,6 @@ import { CldImage } from "next-cloudinary"
 const Header = () => {
     const navigation = ['Comprar', 'Vender', 'FIPE', 'Sobre']
     const { user, signOut } = useContext(AuthContext)
-
-    useEffect(() => {
-
-    }, [user])
 
     return (
       <main className="bg-[#FFFFFF] h-20 flex flex-row items-center justify-between px-4">
@@ -69,6 +60,7 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white">
+                {user.admState? (
               <DropdownMenuItem className="flex ">
                   <Link
                     href={`/home/paineldecontrole`}
@@ -81,6 +73,9 @@ const Header = () => {
                     Painel de Controle
                   </Link>
                 </DropdownMenuItem>
+                ):(
+                  <></>
+                )}
                 <DropdownMenuItem className="flex ">
                   <Link
                     href={`/perfil`}

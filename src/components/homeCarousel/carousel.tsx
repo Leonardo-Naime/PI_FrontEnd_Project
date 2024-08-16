@@ -9,28 +9,39 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import allCars from "@/services/APIs/allVehicles";
+import { useEffect, useState } from "react"
 
 const CarouselSize = () => {
-  return (
+  const [cars, setCars] = useState([])
 
-    <div className="w-full border-none p-0">
-      <Carousel
-        className=" min-w-full px-12 "
-      >
-        <CarouselContent >
-          {Array.from({ length: 9 }).map((_, index) => (
-            <CarouselItem key={index} className="basis-1/6">
-              <div className="">
-                
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
+  useEffect(() => {
+    const fetchCars = async () => {
+      const useCars = await allCars(0)
+      if (useCars) {
+        // @ts-ignore
+        setCars(useCars.data.content.slice(0, 10))
+      }
+    }
+    fetchCars()
+  }, []);
+
+return (
+    <Carousel className="w-3/4">
+      <CarouselContent className="-ml-10 ">
+        {Array.from({ length: 10}).map((_, index) => (
+          <CarouselItem key={index} className="basis-1/4 pl-10">
+            {cars.slice(index * 1, (index + 1)).map((car, carIndex) => (
+              <VehicleCard key={carIndex} vehicle={car} buttontitle="Ver mais" />
+            ))}
+          </CarouselItem>
+        ))}
+      </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
-      </Carousel>
-    </div>
-  )
-}
+    </Carousel>
+);
+
+};
 
 export default CarouselSize

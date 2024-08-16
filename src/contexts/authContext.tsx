@@ -13,6 +13,7 @@ type UserData = {
     senha: string,
     confirmarSenha:string
     fotoDePerfil?: string
+    admState:string
 }
 
 type SignInData = {
