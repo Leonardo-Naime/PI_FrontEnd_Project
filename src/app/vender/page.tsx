@@ -49,10 +49,10 @@ const CadastroVeiculo = () => {
   const [brands, setBrands] = useState<any[]>([])
   const [brandId, setBrandId] = useState<string>()
   const [models, setModels] = useState<any[] | null>([]);
-  const [modelId, setModelId] = useState()
+  const [modelId, setModelId] = useState<string>()
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [years, setYears] = useState<any[] | null>([]);
-  const [yearsId, setYearsId] = useState()
+  const [yearsId, setYearsId] = useState<string>()
   const [yearsLoaded, setYearsLoaded] = useState(false);
   const [publicId, setPublicId] = useState<string[]>([]);
   const router = useRouter();
@@ -65,6 +65,8 @@ const CadastroVeiculo = () => {
       const brandsData = await AllBrands();
       if (brandsData) {
         setBrands(brandsData.data);
+        setModelsLoaded(false)
+        setYearsLoaded(false)
       }
     };
     fetchBrands();
@@ -78,6 +80,7 @@ const CadastroVeiculo = () => {
           setModels(response.data.modelos || []);
           console.log(response.data.modelos)
           setModelsLoaded(true);
+          setYearsLoaded(false)
         }
       }
     };
@@ -99,19 +102,21 @@ const CadastroVeiculo = () => {
   }, [modelId])
 
   const handleVehicle = async (data: vehicleData) => {
-    console.log(publicId)
+    const yearsIdValue = yearsId || "";
+    const brandIdValue = brandId || "";
+    const modelIdValue = modelId || "";
     const response = await registrarVeiculo(
-      data.ano,
+      yearsIdValue,
       data.descricao,
       publicId,
-      data.marca,
-      data.modelo,
+      brandIdValue,
+      modelIdValue,
       data.preco,
       data.tempo,
       user
     );
     if (response.status === 200) {
-      console.log(publicId)
+      console.log(response)
       router.push("/minhagaragem/");
     } else {
       console.log("erro ao registrar veículo", response);
@@ -306,7 +311,7 @@ const CadastroVeiculo = () => {
         <div>
           <div>
             <Label className="block mb-2" htmlFor="tempo">
-              Kilometragem
+              Quilometragem
             </Label>
             <Input
               className="bg-[#EEEEEE]"

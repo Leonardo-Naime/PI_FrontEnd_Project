@@ -11,7 +11,6 @@ const registrarVeiculo = async (
     user:any
 ) => {
     try {
-        console.log(images)
         const response = await axios.post('http://localhost:8080/anuncio',{
             marca:marca,
             modelo:modelo,
