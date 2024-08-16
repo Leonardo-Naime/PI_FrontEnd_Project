@@ -5,128 +5,334 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthContext } from "@/contexts/authContext";
 import registrarVeiculo from "@/services/APIs/vehicleAuthentication";
-import { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useContext, useEffect, useState } from "react";
+import { set, useForm } from "react-hook-form";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Check, ChevronsUpDown, Mountain } from "lucide-react";
+import AllBrands from "@/services/APIs/allBrands";
+import AllModels from "@/services/APIs/allModels";
+import AllYears from "@/services/APIs/allYears"
 
 type vehicleData = {
-  nome: string;
   modelo: string;
   marca: string;
   ano: string;
   tempo: string;
   preco: string;
   descricao: string;
-  imagem: string;
+  imageUrl: string[];
   user: any;
 };
 
 const CadastroVeiculo = () => {
+  const [openBrand, setOpenBrand] = useState(false)
+  const [openModel, setOpenModel] = useState(false)
+  const [openYears, setOpenYears] = useState(false)
+  const [brandValue, setBrandValue] = useState("")
+  const [modelValue, setModelValue] = useState("")
+  const [yearsValue, setYearsValue] = useState("")
+  const [brands, setBrands] = useState<any[]>([])
+  const [brandId, setBrandId] = useState<string>()
+  const [models, setModels] = useState<any[] | null>([]);
+  const [modelId, setModelId] = useState<string>()
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [years, setYears] = useState<any[] | null>([]);
+  const [yearsId, setYearsId] = useState<string>()
+  const [yearsLoaded, setYearsLoaded] = useState(false);
   const [publicId, setPublicId] = useState<string[]>([]);
   const router = useRouter();
   const ctxfunc = useContext(AuthContext);
   const user = ctxfunc.user;
   const { register, handleSubmit } = useForm<vehicleData>();
 
+  useEffect(() => {
+    const fetchBrands = async () => {
+      const brandsData = await AllBrands();
+      if (brandsData) {
+        setBrands(brandsData.data);
+        setModelsLoaded(false)
+        setYearsLoaded(false)
+      }
+    };
+    fetchBrands();
+  }, []);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      if(brandId){
+        const response = await AllModels(brandId);
+        if(response?.data){
+          setModels(response.data.modelos || []);
+          console.log(response.data.modelos)
+          setModelsLoaded(true);
+          setYearsLoaded(false)
+        }
+      }
+    };
+    fetchModels();
+  }, [brandId]);
+
+  useEffect(() => {
+    const fetchYears = async () => {
+      if(brandId && modelId){
+        const response = await AllYears(brandId, modelId)
+        if(response){
+          setYears(response.data)
+          console.log(response.data)
+          setYearsLoaded(true)
+        }
+      }
+    }
+    fetchYears()
+  }, [modelId])
+
   const handleVehicle = async (data: vehicleData) => {
-    console.log(publicId)
+    const yearsIdValue = yearsId || "";
+    const brandIdValue = brandId || "";
+    const modelIdValue = modelId || "";
     const response = await registrarVeiculo(
-      data.ano,
+      yearsIdValue,
       data.descricao,
-      data.nome,
       publicId,
-      data.marca,
-      data.modelo,
+      brandIdValue,
+      modelIdValue,
       data.preco,
       data.tempo,
       user
     );
     if (response.status === 200) {
-      console.log(publicId)
+      console.log(response)
       router.push("/minhagaragem/");
     } else {
       console.log("erro ao registrar veículo", response);
     }
   };
-
   return (
     <div className=" flex flex-col justify-center items-center w-full 2xl:h-screen">
       <div className="flex flex-col items-center space-y-4">
-        <Button className="bg-[#64BCED] text-white w-24 h-12 rounded-lg"></Button>
-        <p className="">Anunciar Veículo</p>
+        <Mountain className="w-10 h-10 mt-2" />
+        <p className="font-serif">Anunciar Veículo</p>
       </div>
       <form
         onSubmit={handleSubmit(handleVehicle)}
         className="flex flex-col justify-center items-center space-y-4 mt-6"
       >
         <div>
-          <div>
-            <Label className="block mb-2" htmlFor="nome">
-              NomeDoVeículo
-            </Label>
-            <Input
-              className="bg-[#EEEEEE]"
-              {...register("nome")}
-              id="nome"
-              placeholder="Ex:Gol"
-              name="nome"
-            ></Input>
-          </div>
+          <Label className="block mb-2" htmlFor="ano">
+            Marca
+          </Label>
+          <Popover open={openBrand} onOpenChange={setOpenBrand}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openBrand}
+                className="w-56 justify-between bg-[#EEEEEE]"
+              >
+                {brandValue
+                  ? brands.find((brands) => brands.codigo === brandValue)?.nome
+                  : "Selecionar marca..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar marca..." />
+                <CommandList>
+                  <CommandEmpty>Marca não encontrada.</CommandEmpty>
+                  <CommandGroup>
+                    {brands.map((brands, index) => (
+                      <CommandItem
+                        key={index}
+                        value={brands.codigo}
+                        onSelect={(currentValue) => {
+                          setBrandValue(
+                            currentValue === brandValue ? "" : currentValue
+                          );
+                          setBrandId(currentValue);
+                          setOpenBrand(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            brandValue === brands.codigo
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {brands.nome}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
         <div>
-          <div>
-            <Label className="block mb-2" htmlFor="modelo">
-              Modelo
-            </Label>
-            <Input
-              className="bg-[#EEEEEE]"
-              {...register("modelo")}
-              id="modelo"
-              placeholder="Ex:G5"
-              name="modelo"
-            ></Input>
-          </div>
+          <Label className="block mb-2" htmlFor="ano">
+            Modelo
+          </Label>
+          <Popover open={openModel} onOpenChange={setOpenModel}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openModel}
+                className="w-56 justify-between bg-[#EEEEEE]"
+                disabled={!models || models.length === 0}
+              >
+                {modelValue
+                  ? models && models.length > 0
+                    ? models.find((model) => model.nome === modelValue)?.nome
+                    : "Carregando modelos..."
+                  : "Selecionar modelo..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar modelo..." />
+                <CommandList>
+                  <CommandEmpty>Nenhum modelo encontrado.</CommandEmpty>
+                  <CommandGroup>
+                    {modelsLoaded && models !== null ? (
+                      models.map((model) => (
+                        <CommandItem
+                          key={model.codigo}
+                          value={model.codigo}
+                          onSelect={(currentValue) => {
+                            setModelValue(
+                              currentValue === modelValue ? "" : currentValue
+                            );
+                            setModelId(model.codigo)
+                            setOpenModel(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              modelValue === model.nome
+                              ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {model.nome}
+                        </CommandItem>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
         <div>
-          <div>
-            <Label className="block mb-2" htmlFor="marca">
-              Marca
-            </Label>
-            <Input
-              className="bg-[#EEEEEE]"
-              {...register("marca")}
-              id="marca"
-              placeholder="Ex:Volkswagen"
-              name="marca"
-            ></Input>
-          </div>
+        <Label className="block mb-2" htmlFor="ano">
+            Ano
+          </Label>
+        <Popover open={openYears} onOpenChange={setOpenYears}>
+            <PopoverTrigger asChild>
+              <Button
+                id="ano"
+                variant="outline"
+                role="combobox"
+                aria-expanded={openYears}
+                className="w-56 justify-between bg-[#EEEEEE]"
+                disabled={!years || years.length === 0}
+              >
+                {yearsValue
+                  ? years && years.length > 0
+                    ? years.find((years) => years.codigo === yearsValue)?.nome
+                    : "Viajando no tempo?..."
+                  : "Selecionar anos..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar ano..." />
+                <CommandList>
+                  <CommandEmpty>Nenhum ano encontrado.</CommandEmpty>
+                  <CommandGroup>
+                    {yearsLoaded && years !== null ? (
+                      years.map((years) => (
+                        <CommandItem
+                          key={years.codigo}
+                          value={years.codigo}
+                          onSelect={(currentValue) => {
+                            setYearsValue(
+                              currentValue === yearsValue ? "" : currentValue
+                            );
+                            setYearsId(years.codigo)
+                            setOpenYears(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              yearsValue === years.codigo
+                              ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {years.nome}
+                        </CommandItem>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
         <div>
-          <div>
-            <Label className="block mb-2" htmlFor="ano">
-              Ano
-            </Label>
-            <Input
-              className="bg-[#EEEEEE]"
-              {...register("ano")}
-              id="ano"
-              placeholder="Ex:1989"
-              name="ano"
-            ></Input>
-          </div>
         </div>
         <div>
           <div>
             <Label className="block mb-2" htmlFor="tempo">
-              TempoDeUso
+              Quilometragem
             </Label>
             <Input
               className="bg-[#EEEEEE]"
               {...register("tempo")}
               id="tempo"
-              placeholder="Ex:6 anos"
+              placeholder="Ex:17000"
               name="tempo"
+              inputMode="numeric"
+              pattern="[0-9]{1,3}(.[0-9]{2})?"
+              maxLength={6}
+              onKeyPress={(e) => {
+                const keyCode = e.which || e.keyCode;
+                if (keyCode === 46 || keyCode === 44) {
+                  // Allow decimal point or comma
+                  return;
+                }
+                if (keyCode < 48 || keyCode > 57) {
+                  // Block non-numeric characters
+                  e.preventDefault();
+                }
+              }}
             ></Input>
           </div>
         </div>
@@ -141,6 +347,20 @@ const CadastroVeiculo = () => {
               id="preco"
               placeholder="Ex:R$ 5.800"
               name="preco"
+              inputMode="numeric"
+              pattern="[0-9]{1,3}(.[0-9]{2})?"
+              maxLength={9}
+              onKeyPress={(e) => {
+                const keyCode = e.which || e.keyCode;
+                if (keyCode === 46 || keyCode === 44) {
+                  // Allow decimal point or comma
+                  return;
+                }
+                if (keyCode < 48 || keyCode > 57) {
+                  // Block non-numeric characters
+                  e.preventDefault();
+                }
+              }}
             ></Input>
           </div>
         </div>
@@ -159,12 +379,14 @@ const CadastroVeiculo = () => {
           </div>
         </div>
         <div>
-          <CldUploadWidget uploadPreset="ml_default"
-          options={{
-            maxFiles: 10, 
-            maxFileSize: 10485760, 
-            multiple: true
-          }}>
+          <CldUploadWidget
+            uploadPreset="ml_default"
+            options={{
+              maxFiles: 10,
+              maxFileSize: 10485760,
+              multiple: true,
+            }}
+          >
             {({ open, results, error }) => {
               if (results?.event === "success") {
                 if (
@@ -172,7 +394,7 @@ const CadastroVeiculo = () => {
                   !publicId.includes(results?.info?.public_id)
                 ) {
                   setPublicId([...publicId, results?.info?.public_id]);
-                  console.log(publicId)
+                  console.log(publicId);
                 }
               }
               return (
@@ -182,6 +404,7 @@ const CadastroVeiculo = () => {
                     e.preventDefault();
                     open();
                   }}
+                  className="bg-[#64BCED]"
                 >
                   Upload an Image
                 </Button>
