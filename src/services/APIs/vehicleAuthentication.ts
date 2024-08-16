@@ -3,7 +3,6 @@ import axios from "axios";
 const registrarVeiculo = async (
     ano:string,
     descricao:string,
-    nome:string,
     images:string[],
     marca:string,
     modelo:string,
@@ -16,7 +15,6 @@ const registrarVeiculo = async (
         const response = await axios.post('http://localhost:8080/anuncio',{
             marca:marca,
             modelo:modelo,
-            nomeDoAutomovel:nome,
             tempoDeUso:tempo,
             ano:ano,
             preco:preco,
