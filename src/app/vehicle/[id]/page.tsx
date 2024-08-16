@@ -154,7 +154,7 @@ const BuyCar = () => {
                 <div>
                   <h1>
                     {Car?.marca}{" "}
-                    <span className="font-bold">{Car?.modelo}</span>
+                    <span className="font-bold">{Car?.modelo.split(' ')[0]}</span>
                   </h1>
                 </div>
                 <div>
@@ -205,7 +205,7 @@ const BuyCar = () => {
             </CardTitle>
             <CardContent className="grid gap-4">
               <div className="flex justify-center">
-                {user?.id === Car?.user.id ? (
+                {user?.id === Car?.user.id || user?.admState === "true"? (
                   <Button
                     onClick={handleClick}
                     className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}

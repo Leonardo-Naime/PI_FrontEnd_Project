@@ -30,9 +30,9 @@ return (
     <Carousel className="w-3/4">
       <CarouselContent className="-ml-10 ">
         {Array.from({ length: 10}).map((_, index) => (
-          <CarouselItem key={index} className="basis-1/4 pl-10">
+          <CarouselItem key={index} className="basis-1/3 pl-10">
             {cars.slice(index * 1, (index + 1)).map((car, carIndex) => (
-              <VehicleCard key={carIndex} vehicle={car} buttontitle="Ver mais" />
+              <VehicleCard key={carIndex} vehicle={car} />
             ))}
           </CarouselItem>
         ))}

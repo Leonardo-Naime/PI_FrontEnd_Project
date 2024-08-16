@@ -19,8 +19,7 @@ type Car = {
   id: string;
   ano: string;
   descricao: string;
-  nomeDoAutomovel: string;
-  imagemUrl: string;
+  imageUrl: string[];
   marca: string;
   modelo: string;
   preco: string;
@@ -66,7 +65,7 @@ const Comprar = () => {
                   <div
                     key={index}
                     >
-                    <VehicleCard vehicle={car} buttontitle="Ver mais" />
+                    <VehicleCard vehicle={car} />
                   </div>
                 ))}
               </div>

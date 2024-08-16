@@ -9,8 +9,7 @@ type Car = {
   id:string,
   ano:string,
   descricao:string,
-  nomeDoAutomovel:string,
-  imagemUrl:string,
+  imageUrl:string[],
   marca:string,
   modelo:string,
   preco:string,
@@ -33,20 +32,20 @@ const VehicleCard = ({vehicle}:{vehicle:Car}) => {
                 <CldImage
                   width={340}
                   height={340}
-                  src={vehicle.imagemUrl}
-                  alt={vehicle.nomeDoAutomovel}
+                  src={vehicle.imageUrl[0]}
+                  alt={vehicle.modelo}
                 />
               </div>
             </div>
             <div className="bg-[#64BCED] h-1 "></div>
             <div className="font-sans text-sm p-6 pt-2 flex justify-between">
               <div>
-                <div>{vehicle.nomeDoAutomovel} </div>
+                <div>{vehicle.modelo.split(' ')[0]} </div>
                 <div className="mb-2 text-zinc-400">{vehicle.marca}</div>
                 <div className="flex text-[12px]">
                   <div className="flex items-center mr-2">
                     <Gauge className="h-3 w-3 mr-1" />
-                    <div>57.150 km</div>
+                    <div>{vehicle.tempoDeUso} km</div>
                   </div>
                   <div className="flex items-center">
                     <CalendarDays className="h-3 w-3 mr-1" />
