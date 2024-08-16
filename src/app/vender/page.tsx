@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { AuthContext } from "@/contexts/authContext";
 import registrarVeiculo from "@/services/APIs/vehicleAuthentication";
 import { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils"
@@ -25,52 +25,8 @@ import {
 } from "@/components/ui/popover"
 import { Check, ChevronsUpDown, Mountain } from "lucide-react";
 import AllBrands from "@/services/APIs/allBrands";
-
-const marcas = [
-  {
-    codigo: "1",
-    nome: "Acura",
-  },
-  {
-    codigo: "2",
-    nome: "Agrale",
-  },
-  {
-    codigo: "3",
-    nome: "Alfa Romeo",
-  },
-  {
-    codigo: "4",
-    nome: "AM Gen",
-  },
-  {
-    codigo: "5",
-    nome: "Asia Motors",
-  },
-]
-
-const modelo = [
-  {
-    codigo: "1",
-    nome: "Carro bomba",
-  },
-  {
-    codigo: "2",
-    nome: "Mermaid",
-  },
-  {
-    codigo: "3",
-    nome: "Romano a gas",
-  },
-  {
-    codigo: "4",
-    nome: "Amarok geração",
-  },
-  {
-    codigo: "5",
-    nome: "Samba canção",
-  },
-]
+import AllModels from "@/services/APIs/allModels";
+import AllYears from "@/services/APIs/allYears"
 
 type vehicleData = {
   modelo: string;
@@ -86,11 +42,18 @@ type vehicleData = {
 const CadastroVeiculo = () => {
   const [openBrand, setOpenBrand] = useState(false)
   const [openModel, setOpenModel] = useState(false)
-  const [value, setValue] = useState("")
+  const [openYears, setOpenYears] = useState(false)
+  const [brandValue, setBrandValue] = useState("")
+  const [modelValue, setModelValue] = useState("")
+  const [yearsValue, setYearsValue] = useState("")
   const [brands, setBrands] = useState<any[]>([])
   const [brandId, setBrandId] = useState<string>()
-  const [models, setModels] = useState()
+  const [models, setModels] = useState<any[] | null>([]);
   const [modelId, setModelId] = useState()
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [years, setYears] = useState<any[] | null>([]);
+  const [yearsId, setYearsId] = useState()
+  const [yearsLoaded, setYearsLoaded] = useState(false);
   const [publicId, setPublicId] = useState<string[]>([]);
   const router = useRouter();
   const ctxfunc = useContext(AuthContext);
@@ -98,11 +61,42 @@ const CadastroVeiculo = () => {
   const { register, handleSubmit } = useForm<vehicleData>();
 
   useEffect(() => {
-    const handleAllBrands = async () => {
-      // const response = await AllBrands();
+    const fetchBrands = async () => {
+      const brandsData = await AllBrands();
+      if (brandsData) {
+        setBrands(brandsData.data);
+      }
+    };
+    fetchBrands();
+  }, []);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      if(brandId){
+        const response = await AllModels(brandId);
+        if(response?.data){
+          setModels(response.data.modelos || []);
+          console.log(response.data.modelos)
+          setModelsLoaded(true);
+        }
+      }
+    };
+    fetchModels();
+  }, [brandId]);
+
+  useEffect(() => {
+    const fetchYears = async () => {
+      if(brandId && modelId){
+        const response = await AllYears(brandId, modelId)
+        if(response){
+          setYears(response.data)
+          console.log(response.data)
+          setYearsLoaded(true)
+        }
+      }
     }
-    handleAllBrands()
-  })
+    fetchYears()
+  }, [modelId])
 
   const handleVehicle = async (data: vehicleData) => {
     console.log(publicId)
@@ -123,7 +117,6 @@ const CadastroVeiculo = () => {
       console.log("erro ao registrar veículo", response);
     }
   };
-
   return (
     <div className=" flex flex-col justify-center items-center w-full 2xl:h-screen">
       <div className="flex flex-col items-center space-y-4">
@@ -146,8 +139,8 @@ const CadastroVeiculo = () => {
                 aria-expanded={openBrand}
                 className="w-56 justify-between bg-[#EEEEEE]"
               >
-                {value
-                  ? marcas.find((marcas) => marcas.codigo === value)?.nome
+                {brandValue
+                  ? brands.find((brands) => brands.codigo === brandValue)?.nome
                   : "Selecionar marca..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -158,12 +151,14 @@ const CadastroVeiculo = () => {
                 <CommandList>
                   <CommandEmpty>Marca não encontrada.</CommandEmpty>
                   <CommandGroup>
-                    {marcas.map((marcas, index) => (
+                    {brands.map((brands, index) => (
                       <CommandItem
                         key={index}
-                        value={marcas.codigo}
+                        value={brands.codigo}
                         onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
+                          setBrandValue(
+                            currentValue === brandValue ? "" : currentValue
+                          );
                           setBrandId(currentValue);
                           setOpenBrand(false);
                         }}
@@ -171,12 +166,12 @@ const CadastroVeiculo = () => {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            value === marcas.codigo
+                            brandValue === brands.codigo
                               ? "opacity-100"
                               : "opacity-0"
                           )}
                         />
-                        {marcas.nome}
+                        {brands.nome}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -185,7 +180,6 @@ const CadastroVeiculo = () => {
             </PopoverContent>
           </Popover>
         </div>
-
         <div>
           <Label className="block mb-2" htmlFor="ano">
             Modelo
@@ -197,9 +191,12 @@ const CadastroVeiculo = () => {
                 role="combobox"
                 aria-expanded={openModel}
                 className="w-56 justify-between bg-[#EEEEEE]"
+                disabled={!models || models.length === 0}
               >
-                {value
-                  ? modelo.find((modelo) => modelo.codigo === value)?.nome
+                {modelValue
+                  ? models && models.length > 0
+                    ? models.find((model) => model.nome === modelValue)?.nome
+                    : "Carregando modelos..."
                   : "Selecionar modelo..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -208,29 +205,35 @@ const CadastroVeiculo = () => {
               <Command>
                 <CommandInput placeholder="Buscar modelo..." />
                 <CommandList>
-                  <CommandEmpty>No modelo found.</CommandEmpty>
+                  <CommandEmpty>Nenhum modelo encontrado.</CommandEmpty>
                   <CommandGroup>
-                    {modelo.map((modelo) => (
-                      <CommandItem
-                        key={modelo.codigo}
-                        value={modelo.codigo}
-                        onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
-                          setOpenModel(false);
-                          
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value === modelo.codigo
+                    {modelsLoaded && models !== null ? (
+                      models.map((model) => (
+                        <CommandItem
+                          key={model.codigo}
+                          value={model.codigo}
+                          onSelect={(currentValue) => {
+                            setModelValue(
+                              currentValue === modelValue ? "" : currentValue
+                            );
+                            setModelId(model.codigo)
+                            setOpenModel(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              modelValue === model.nome
                               ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {modelo.nome}
-                      </CommandItem>
-                    ))}
+                                : "opacity-0"
+                            )}
+                          />
+                          {model.nome}
+                        </CommandItem>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
                   </CommandGroup>
                 </CommandList>
               </Command>
@@ -238,32 +241,67 @@ const CadastroVeiculo = () => {
           </Popover>
         </div>
         <div>
-          <div>
-            <Label className="block mb-2" htmlFor="ano">
-              Ano
-            </Label>
-            <Input
-              className="bg-[#EEEEEE]"
-              {...register("ano")}
-              id="ano"
-              placeholder="Ex:1989"
-              name="ano"
-              inputMode="numeric"
-              pattern="[0-9]{1,3}(.[0-9]{2})?"
-              maxLength={4}
-              onKeyPress={(e) => {
-                const keyCode = e.which || e.keyCode;
-                if (keyCode === 46 || keyCode === 44) {
-                  // Allow decimal point or comma
-                  return;
-                }
-                if (keyCode < 48 || keyCode > 57) {
-                  // Block non-numeric characters
-                  e.preventDefault();
-                }
-              }}
-            ></Input>
-          </div>
+        <Label className="block mb-2" htmlFor="ano">
+            Ano
+          </Label>
+        <Popover open={openYears} onOpenChange={setOpenYears}>
+            <PopoverTrigger asChild>
+              <Button
+                id="ano"
+                variant="outline"
+                role="combobox"
+                aria-expanded={openYears}
+                className="w-56 justify-between bg-[#EEEEEE]"
+                disabled={!years || years.length === 0}
+              >
+                {yearsValue
+                  ? years && years.length > 0
+                    ? years.find((years) => years.codigo === yearsValue)?.nome
+                    : "Viajando no tempo?..."
+                  : "Selecionar anos..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-0">
+              <Command>
+                <CommandInput placeholder="Buscar ano..." />
+                <CommandList>
+                  <CommandEmpty>Nenhum ano encontrado.</CommandEmpty>
+                  <CommandGroup>
+                    {yearsLoaded && years !== null ? (
+                      years.map((years) => (
+                        <CommandItem
+                          key={years.codigo}
+                          value={years.codigo}
+                          onSelect={(currentValue) => {
+                            setYearsValue(
+                              currentValue === yearsValue ? "" : currentValue
+                            );
+                            setYearsId(years.codigo)
+                            setOpenYears(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              yearsValue === years.codigo
+                              ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {years.nome}
+                        </CommandItem>
+                      ))
+                    ) : (
+                      <div></div>
+                    )}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
         </div>
         <div>
           <div>
