@@ -63,7 +63,7 @@ const BuyCar = () => {
   const url = usePathname().split('/')
   const id = url[url.length-2]
   const [Car, setCar] = useState<Car>()
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(true);
   const [showChatButton, setShowChatButton] = useState(false);
   
   const handleClick = async () => {
