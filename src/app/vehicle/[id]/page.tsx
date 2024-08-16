@@ -18,7 +18,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 import CarouselSize from "@/components/homeCarousel/carousel";
-import { Flame } from "lucide-react";
+import { Calendar, Flame, Gauge, Heart, HeartOff, MessageSquare, Speech, Trash2, User } from "lucide-react";
 import { AuthContext } from "@/contexts/authContext";
 import UserVehicle from "@/services/APIs/userVehicle";
 import LikeVehicles from "@/services/APIs/likeVehicles";
@@ -38,15 +38,35 @@ type Car = {
     user:any
 }
 
+const image = [
+  "Screenshot_4_ststqg",
+  "image_k3yhem",
+  "WIN_20240322_16_43_21_Pro_qciirc",
+  "13c6a83cc59ce0b09cbb1057fc116e40_vbcpfc",
+  "perritos-amigos_fj2fdd"
+]
+
+const carro = {
+  ano: 1900,
+  descricao: "descricao foda",
+  nomeDoAutomovel: "BOmbacha Car",
+  marca:"marca",
+  modelo:"modelo",
+  preco:1900,
+  tempo: "2000 km",
+}
+
 const BuyCar = () => {
   const {user} = useContext(AuthContext)
   const url = usePathname().split('/')
   const id = url[url.length-2]
   const [Car, setCar] = useState<Car>()
   const [isFavorited, setIsFavorited] = useState(false);
+  const [showChatButton, setShowChatButton] = useState(false);
   
   const handleClick = async () => {
     setIsFavorited(!isFavorited);
+    setShowChatButton(isFavorited);
     if(!isFavorited){
       console.log("idcarro:",id,"userid:",user?.id)
       const likes = await UnlikeVehicles(id,user?.id)
@@ -66,81 +86,106 @@ const BuyCar = () => {
       <div>
         <Header></Header>
       </div>
-      {user?.id === Car?.user.id ?(
-        <Button
-        onClick={handleClick}
-        className={`transition-transform transform ${isFavorited ? 'bg-orange-500' : 'bg-red-500'} 
-        text-white px-4 py-2 rounded-full 
-        ${isFavorited ? 'animate-out hover:scale-105 hover:bg-orange-600' : 'animate-in hover:scale-105 hover:bg-red-700'}`}
-        >
-        {isFavorited ? (
-          <>
-            <Flame className=""/> {"Fodase"}
-          </>
-        ):('Desfavoritar')}
-      </Button>
-      ):(
-        <Button
-        onClick={handleClick}
-        className={`transition-transform transform ${isFavorited ? 'bg-orange-500' : 'bg-red-500'} 
-        text-white px-4 py-2 rounded-full 
-        ${isFavorited ? 'animate-out hover:scale-105 hover:bg-orange-600' : 'animate-in hover:scale-105 hover:bg-red-700'}`}
-        >
-        {isFavorited ? (
-          <>
-            <Flame className=""/> {"Favoritar"}
-          </>
-        ):('Desfavoritar')}
-      </Button>
-      )}
-      <div>
-      {Car?.imageUrl && (
-        <div className="flex w-full h-64">
-          {Car.imageUrl.map((imageUrl, index) => (
+        <div>
+        {image && (
+        <div className="flex w-full h-screen">
+          <div className="w-1/2 h-full relative" >
             <CldImage
-            key={index}
-            width={340}
-            height={340}
-            src={imageUrl}
-            alt={`Image ${index + 1}`}
+              fill={true}
+              src={image[0]}
+              alt="Image 1"
             />
-          ))}
+          </div>
+          <div className="w-1/2 h-full flex flex-wrap justify-center">
+            {image.slice(1).map((imageUrl, index) => (
+              <div key={index} className="w-1/2 h-1/2 p-2 relative">
+                <CldImage
+                  fill={true}
+                  src={imageUrl}
+                  alt={`Image ${index + 2}`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      )}
-      <div className="flex justify-around">
-        <div className="flex flex-col p-10">
-          <div className="flex space-x-28 items-end">
+        )}
+      <div className="flex justify-around py-10">
+        <div className="flex w-3/5 flex-col p-10">
+          <div className="flex space-x-28 items-end pl-10 pb-10">
             <div>
-              <div className="flex">
-                <h1>{Car?.nomeDoAutomovel}</h1>
-                <h1>{Car?.marca}</h1>
+              <div>
+                <h1>{carro.marca} <span className="font-bold">{carro.nomeDoAutomovel}</span></h1>
               </div>
               <div>
-                <h2>{Car?.modelo}</h2>
+                <h2 className="font-semibold text-gray-600">{carro.modelo}</h2>
               </div>
             </div>
-            <div className="flex space-x-16">
-              <div>Preço na Fipe: {"109,000"}</div>
-              <div>Preço do vendedor: {Car?.preco}</div>
+            <div className="flex space-x-28 items-end">
+              <div className="text-gray-600">de R$ {"109,000"}</div>
+              <div className="font-semibold text-gray-600">por R$ <span className="text-red-600 text-3xl">{Car?.preco}</span></div>
             </div>
           </div>
-          <div>
-            <div>
-              <div>Ficha técnica</div>
-              <div className="grid grid-cols-3">
-                <p>marca</p>
-                <p>modela</p>
-                <p>ano</p>
-                <p>km</p>
-                <p>tal</p>
-                <p>lal</p>
+          <div className="py-5">
+            <div className="pl-10">
+              <div className="pb-5 font-semibold text-xl">FICHA TÉCNICA</div>
+              <div className="grid grid-cols-3 gap-10">
+                <div className="flex flex-row">
+                <Calendar className="w-5 h-5 rounded-full bg-transparent" color="gray"></Calendar>
+                <p className="pl-1 text-gray-600">{carro.ano}</p>
+                </div>
+                <div className="flex flex-row">
+                <Gauge className="w-5 h-5 rounded-full bg-transparent" color="gray"></Gauge>
+                <p className="pl-1 text-gray-600">{carro.tempo}</p>
+                </div>
+                <div className="flex flex-row">
+                <Speech className="w-5 h-5 rounded-full bg-transparent" color="gray"></Speech>
+                <p className="pl-1 text-gray-600">{carro.descricao}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <Card className="border-none p-0 space-y-2 bg-[EEEEE]">
-          <CardTitle className="p-2">Entre em contato!</CardTitle>
-          <CardContent className="p-0"><Button>Like</Button></CardContent>
+        <Card className="border-solid rounded-lg border-4 border-gray-300  space-y-20  bg-[EEEEE]">
+          <CardTitle className="p-5 flex justify-center">Entre em contato!</CardTitle>
+          <CardContent className="grid gap-4">
+              <div className="flex justify-center">
+                {user?.id === Car?.user.id ?(
+                  <Button
+                  onClick={handleClick}
+                  className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}
+                >
+                  <Trash2 className="" style={{ marginRight: 4 }}/> {"Excluir anúncio"}
+                </Button>
+                ):(
+                  <div>
+                    {isFavorited ? (
+                      <Button
+                      onClick={handleClick}
+                      className={`transition-transform transform bg-blue-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-blue-600`}
+                    >
+                      <Heart className="" style={{ marginRight: 4 }} /> {"Favoritar"}
+                    </Button>
+                    ) : (
+                      <div className="flex gap-2">
+                      <Button
+                      onClick={handleClick}
+                      className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-in hover:scale-105 hover:bg-red-700`}
+                    >
+                      <HeartOff style={{ marginRight: 4 }} /> {"Desfavoritar"}
+                    </Button>
+                      {showChatButton && (
+                        <Button
+                          className={`transition-transform transform bg-green-500 text-white px-4 py-2 rounded-full animate-in hover:scale-105 hover:bg-green-600`}
+                        >
+                          <MessageSquare className="" style={{ marginRight: 4 }} /> {"Chat"}
+                        </Button>
+                      )}
+                    </div>
+                    )}
+                  </div>
+                )}
+              </div>
+          </CardContent>
         </Card>
       </div>
       </div>
