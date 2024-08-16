@@ -24,6 +24,7 @@ import UserVehicle from "@/services/APIs/userVehicle";
 import LikeVehicles from "@/services/APIs/likeVehicles";
 import UnlikeVehicles from "@/services/APIs/unlikeVehicles";
 import { CldImage } from "next-cloudinary";
+import DeleteVehicle from "@/services/APIs/deleteVehicle";
 
 
 type Car = {
@@ -57,6 +58,7 @@ const carro = {
 }
 
 const BuyCar = () => {
+  const router = useRouter();
   const {user} = useContext(AuthContext)
   const url = usePathname().split('/')
   const id = url[url.length-2]
@@ -65,12 +67,28 @@ const BuyCar = () => {
   const [showChatButton, setShowChatButton] = useState(false);
   
   const handleClick = async () => {
+    if (user?.id === Car?.user.id) {
+      handleDelete();
+    } else {
     setIsFavorited(!isFavorited);
     setShowChatButton(isFavorited);
     if(!isFavorited){
       console.log("idcarro:",id,"userid:",user?.id)
       const likes = await UnlikeVehicles(id,user?.id)
     } else await LikeVehicles(id,user?.id)
+  }
+  };
+
+  const handleDelete = async () => {
+
+    try {
+      await DeleteVehicle(id);
+      console.log("Vehicle deleted successfully!");
+      router.push("/comprar");
+    } catch (error) {
+      console.error("Error deleting vehicle:", error);
+    }
+
   };
 
   useEffect(() => {
