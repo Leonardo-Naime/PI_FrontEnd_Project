@@ -8,11 +8,7 @@ import { redirect, useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import registrarUsuario from "@/services/APIs/userRegistration"
 import Image from 'next/image'
-
-
-const imageCadastro = [
-  "ielajwasjtjqelvxz48g"
-]
+import { CldImage } from "next-cloudinary"
 
 
 const Cadastro = () => {
@@ -27,7 +23,11 @@ const Cadastro = () => {
         // console.log(data);
         try{
             const response = await registrarUsuario(nome, email, senha, confirmarSenha)
-            redirect('/home/login')
+            console.log(response)
+            if(response.status === 200){
+
+              router.push('/home/login')
+            }
         } catch (error) {
             console.log(error);
         }
@@ -38,13 +38,20 @@ const Cadastro = () => {
     return (
       <div className="min-h-screen bg-[#f3f4f6] flex justify-end">
         <div className="w-full">
-        <Image
+          <CldImage
+          className="h-full w-full"
+            width={1920}
+            height={1080}
+            alt="carImage"
+            src="wzfs0jgf4u5wfckqs6ju"
+          />
+        {/* <Image
                   className="h-full "
                   src={"https://placehold.co/1920x1080/png"}
                   alt="Workflow"
                   width={1920}
                   height={1080}
-                />
+                /> */}
         </div>
         <div className="bg-white p-10 rounded-lg shadow-lg w-96 flex items-center">
           <div className="w-full">

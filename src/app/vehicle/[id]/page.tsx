@@ -1,14 +1,19 @@
-'use client'
+"use client";
 
 import * as React from "react";
-import DefaultFooter from "@/components/footer/footer"
-import Header from "@/components/header/header"
-import VehicleReq from "@/services/APIs/vehicle"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useContext, useEffect, useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import DefaultFooter from "@/components/footer/footer";
+import Header from "@/components/header/header";
+import VehicleReq from "@/services/APIs/vehicle";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -16,9 +21,19 @@ import {
   CarouselNext,
   CarouselPrevious,
   type CarouselApi,
-} from "@/components/ui/carousel"
+} from "@/components/ui/carousel";
 import CarouselSize from "@/components/homeCarousel/carousel";
-import { Calendar, Flame, Gauge, Heart, HeartOff, MessageSquare, Speech, Trash2, User } from "lucide-react";
+import {
+  Calendar,
+  Flame,
+  Gauge,
+  Heart,
+  HeartOff,
+  MessageSquare,
+  Speech,
+  Trash2,
+  User,
+} from "lucide-react";
 import { AuthContext } from "@/contexts/authContext";
 import UserVehicle from "@/services/APIs/userVehicle";
 import LikeVehicles from "@/services/APIs/likeVehicles";
@@ -26,21 +41,40 @@ import UnlikeVehicles from "@/services/APIs/unlikeVehicles";
 import { CldImage } from "next-cloudinary";
 import DeleteVehicle from "@/services/APIs/deleteVehicle";
 import UserMensage from "@/services/APIs/userMensage";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, useForm } from "react-hook-form";
-
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import UsersLikeReq from "@/services/APIs/allLikes";
 
 type Car = {
-    ano:string,
-    descricao:string,
-    imageUrl:string[],
-    marca:string,
-    modelo:string,
-    preco:string,
-    tempoDeUso:string,
-    user:any
-}
+  ano: string;
+  descricao: string;
+  imageUrl: string[];
+  marca: string;
+  modelo: string;
+  preco: string;
+  tempoDeUso: string;
+  user: any;
+};
+
+type User = {
+  nome: string;
+  email: string;
+  fotoDePerfil: string;
+  id: string;
+};
 
 // const image = [
 //   "Screenshot_4_ststqg",
@@ -62,49 +96,62 @@ type Car = {
 
 const BuyCar = () => {
   const router = useRouter();
-  const {user} = useContext(AuthContext)
-  const url = usePathname().split('/')
-  const id = url[url.length-2]
-  const [Car, setCar] = useState<Car>()
+  const { user } = useContext(AuthContext);
+  const url = usePathname().split("/");
+  const id = url[url.length - 2];
+  const [Car, setCar] = useState<Car>();
   const [isFavorited, setIsFavorited] = useState(true);
   const [showChatButton, setShowChatButton] = useState(false);
-  const [mensagem, setMensagem] = useState('');
-  const [textareaValue, setTextareaValue] = useState('');
-  
+  const [textareaValue, setTextareaValue] = useState();
+  const [numValue, setNumValue] = useState();
+  const [users, setUsers] = useState<User[]>([]);
+
   const handleClick = async () => {
     if (user?.id === Car?.user.id) {
       handleDelete();
     } else {
-    setIsFavorited(!isFavorited);
-    setShowChatButton(isFavorited);
-    if(!isFavorited){
-      console.log("idcarro:",id,"userid:",user?.id)
-      const likes = await UnlikeVehicles(id,user?.id)
-    } else await LikeVehicles(id,user?.id)
-  }
+      setIsFavorited(!isFavorited);
+      setShowChatButton(isFavorited);
+      if (!isFavorited) {
+        console.log("idcarro:", id, "userid:", user?.id);
+        const likes = await UnlikeVehicles(id, user?.id);
+      } else await LikeVehicles(id, user?.id);
+    }
   };
 
   const handleSendMessage = () => {
-    setMensagem(textareaValue);
-    handleMensage(mensagem)
+    handleMensage(textareaValue, numValue);
   };
-  
-  const handleTextareaChange = (event:any) => {
+
+  const handleTextareaChange = (event: any) => {
     setTextareaValue(event.target.value);
   };
 
-  const handleMensage = async(mensagem:any) => {
-    if(mensagem && user?.id){
-      const response = UserMensage(mensagem, user.id, "bomba")
-      console.log(response)
+  const handleNumChange = (event: any) => {
+    setNumValue(event.target.value);
+  };
+
+  const handleMensage = async (mensagem: any, num: any) => {
+    console.log(
+      "mensage:",
+      mensagem,
+      "num:",
+      num,
+      "anuncioId:",
+      id,
+      "userid:",
+      user?.id
+    );
+    if (mensagem && user?.id && num) {
+      const response = await UserMensage(mensagem, num, id, user.id);
+      console.log("algo:", response?.data);
     }
 
-  //   if(user)
-  //   UserMensage(mensage, user?.id, "bomba")
-  }
+    //   if(user)
+    //   UserMensage(mensage, user?.id, "bomba")
+  };
 
   const handleDelete = async () => {
-
     try {
       await DeleteVehicle(id);
       console.log("Vehicle deleted successfully!");
@@ -112,8 +159,15 @@ const BuyCar = () => {
     } catch (error) {
       console.error("Error deleting vehicle:", error);
     }
-
   };
+
+  useEffect(() => {
+    const FetchUsers = async () => {
+      const allusers: User[] = await UsersLikeReq(id);
+      setUsers(allusers);
+    };
+    FetchUsers();
+  }, [users]);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -122,7 +176,7 @@ const BuyCar = () => {
     };
     fetchCar();
   }, [id]);
-  
+
   return (
     <div className="bg-[#EEEEEE]">
       <div>
@@ -154,7 +208,9 @@ const BuyCar = () => {
                 <div>
                   <h1>
                     {Car?.marca}{" "}
-                    <span className="font-bold">{Car?.modelo.split(' ')[0]}</span>
+                    <span className="font-bold">
+                      {Car?.modelo.split(" ")[0]}
+                    </span>
                   </h1>
                 </div>
                 <div>
@@ -199,20 +255,65 @@ const BuyCar = () => {
             </div>
           </div>
           <div></div>
-          <Card className="border-solid rounded-lg border-4 border-gray-300  space-y-20  bg-[EEEEE]">
+          <Card className="border-solid rounded-lg border-4 border-gray-300  space-y-10  bg-[EEEEE]">
             <CardTitle className="p-5 flex justify-center">
               Entre em contato!
             </CardTitle>
-            <CardContent className="grid gap-4">
+            <CardContent className="flex flex-col justify-center items-center">
               <div className="flex justify-center">
-                {(user?.id === Car?.user.id )|| (user?.admState)? (
-                  <Button
-                    onClick={handleClick}
-                    className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}
-                  >
-                    <Trash2 className="" style={{ marginRight: 4 }} />{" "}
-                    {"Excluir anúncio"}
-                  </Button>
+                {user?.id === Car?.user.id || user?.admState ? (
+                  <div>
+                    {/* <ScrollArea className="h-96 w-[540px] rounded-md border">
+                      <div>
+                        {users.map((object, index) => (
+                          <>
+                            <div key={index} className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="ml-10">
+                                  {object?.fotoDePerfil ? (
+                                    <CldImage
+                                      className="rounded-full border-none w-10 h-10"
+                                      width={400}
+                                      height={400}
+                                      src={object.fotoDePerfil}
+                                      alt="FotoDePerfil"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-full bg-[#64BCED] items-center flex justify-center">
+                                      <User
+                                        className="w-5 h-5 rounded-full bg-transparent"
+                                        color="white"
+                                      ></User>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="ml-2">{object.nome}</div>
+                              </div>
+                              <div className="mr-10">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button className="bg-[#64BCED] h-6 rounded-lg">
+                                      Editar
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent className="bg-white p-0">
+                                    <DropdownMenuItem className="flex p-0"></DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </div>
+                          </>
+                        ))}
+                      </div>
+                    </ScrollArea> */}
+                    <Button
+                      onClick={handleClick}
+                      className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}
+                    >
+                      <Trash2 className="" style={{ marginRight: 4 }} />{" "}
+                      {"Excluir anúncio"}
+                    </Button>
+                  </div>
                 ) : (
                   <div>
                     {isFavorited ? (
@@ -224,7 +325,30 @@ const BuyCar = () => {
                         {"Favoritar"}
                       </Button>
                     ) : (
-                      <div className="flex gap-2">
+                      <div className="items-center space-y-2 flex flex-col">
+                        {showChatButton && (
+                          <div className="flex flex-col space-y-2">
+                            <div>
+                              <Input
+                                placeholder="Envie sua proposta"
+                                onChange={handleTextareaChange}
+                                value={textareaValue}
+                              ></Input>
+                              <Input
+                                placeholder="Digite seu numero"
+                                onChange={handleNumChange}
+                                value={numValue}
+                              ></Input>
+                            </div>
+                            <Button
+                              type="button"
+                              onClick={handleSendMessage}
+                              className="bg-green-400 hover:bg-green-600"
+                            >
+                              Enviar mensagem
+                            </Button>
+                          </div>
+                        )}
                         <Button
                           onClick={handleClick}
                           className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-in hover:scale-105 hover:bg-red-700`}
@@ -232,25 +356,6 @@ const BuyCar = () => {
                           <HeartOff style={{ marginRight: 4 }} />{" "}
                           {"Desfavoritar"}
                         </Button>
-                        {showChatButton && (
-                          <Popover>
-                          <PopoverTrigger>
-                            <MessageSquare
-                              className=""
-                              style={{ marginRight: 4 }}
-                            />{" "}
-                            {"Chat"}
-                          </PopoverTrigger>
-                          <PopoverContent>
-                            <Textarea placeholder="Envie sua proposta para o vendedor" 
-                              id="mensagem"
-                              value={textareaValue}
-                              onChange={handleTextareaChange}
-                            />
-                            <Button type="button" onClick={handleSendMessage}>Send message</Button>
-                          </PopoverContent>
-                        </Popover>
-                        )}
                       </div>
                     )}
                   </div>
@@ -265,6 +370,6 @@ const BuyCar = () => {
       </div>
     </div>
   );
-}
-    
-export default BuyCar
+};
+
+export default BuyCar;

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useContext } from "react"
 import { AuthContext } from "@/contexts/authContext"
 import Image from 'next/image'
+import { CldImage } from "next-cloudinary"
 
 
 const Login = () => {
@@ -31,13 +32,14 @@ const Login = () => {
     return (
       <div className="min-h-screen bg-[#f3f4f6] flex justify-between">
         <div className="w-full">
-          <Image
-            className="h-full "
-            src={"https://placehold.co/1920x1080/png"}
-            alt="Workflow"
+        <CldImage
+          className="h-full w-full"
             width={1920}
             height={1080}
+            alt="carImage"
+            src="qqm57mcnfpk4fv8dst3k"
           />
+          
         </div>
         <div className="bg-white p-10 rounded-lg shadow-lg w-96 flex items-center">
           <div className="w-full">

@@ -27,11 +27,13 @@ const VehicleCard = ({vehicle}:{vehicle:Car}) => {
       <Card className=" border-none">
         <CardContent className=" rounded-lg overflow-hidden flex justify-center p-0">
           <div className="">
-            <div className="">
-              <div onClick={() => router.push(`/vehicle/${vehicle.id}`)}>
+            <div className="w-full">
+              <div className="w-full"
+              onClick={() => router.push(`/vehicle/${vehicle.id}`)}>
                 <CldImage
-                  width={340}
-                  height={340}
+                className="w-96 h-96"
+                  width={1000}
+                  height={1000}
                   src={vehicle.imageUrl[0]}
                   alt={vehicle.modelo}
                 />

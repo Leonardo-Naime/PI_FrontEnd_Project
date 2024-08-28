@@ -1,10 +1,11 @@
 import axios from "axios"
 
 
-const UserMensage = async (mensage:string, anuncioId:string, userId:string) => {
+const UserMensage = async (mensage:string, num:string, anuncioId:string, userId:string) => {
     try {
         const response = await axios.post("http://localhost:8080/anuncio/"+anuncioId+"/comentario/"+userId,{
-            comentarios:mensage
+            comentario:mensage,
+            numero: num
         })
         return response 
     } catch(error){

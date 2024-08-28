@@ -23,7 +23,6 @@ type User = {
 }
 
 const Control = () => {
-
   const [users, setUsers] = useState<User[]>([])
 
   useEffect(() => {

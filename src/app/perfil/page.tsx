@@ -12,6 +12,7 @@ import { User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import ProfileChange from "@/services/APIs/profileChange";
+import Header from "@/components/header/header";
 
 
 const Perfil = () => {
@@ -30,10 +31,12 @@ const Perfil = () => {
     await ProfileChange(user, fulldata)
     refreshUserData()
   }
+
   
   return (
     <main className="">
       <div className="">
+        <Header/>
         <div className="bg-slate-200 w-full h-48 z-0 relative mb-16">
           <CldUploadWidget uploadPreset="ml_default">
             {({ open, results }) => {
