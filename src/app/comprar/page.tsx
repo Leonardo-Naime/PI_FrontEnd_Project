@@ -5,7 +5,7 @@ import Header from "@/components/header/header"
 import VehicleCard from "@/components/vehicleCard/vehicleCard";
 import allCars from "@/services/APIs/allVehicles";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import {
   Pagination,
   PaginationContent,
@@ -14,6 +14,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { AuthContext } from "@/contexts/authContext";
 
 type Car = {
   id: string;
@@ -28,6 +29,7 @@ type Car = {
 };
 
 const Comprar = () => {
+    const {user} = useContext(AuthContext)
     const [cars, setCars] = useState<Car[]>([])
     const [pageNumber, setPageNumber] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -38,10 +40,11 @@ const Comprar = () => {
         const fetchCars = async () => {
             const useCars = await allCars(pageNumber)
             if (useCars) {
-                // @ts-ignore
-                setCars(useCars.data.content)
-                // @ts-ignore
-                setTotalPages(useCars.data.totalPages)
+              // @ts-ignore
+              setCars(useCars.data.content);
+              // @ts-ignore
+              setTotalPages(useCars.data.totalPages);
+              console.log(useCars)
             }
         }
         fetchCars()
@@ -61,13 +64,16 @@ const Comprar = () => {
           <div className="flex justify-center flex-grow mt-10 mb-10">
             {cars.length > 0 ? (
               <div className="grid grid-cols-4 gap-10">
-                {cars.map((car, index) => (
-                  <div
-                    key={index}
-                    >
-                    <VehicleCard vehicle={car} />
-                  </div>
-                ))}
+                {cars.map((car, index) => {
+
+                  return (
+                    <div
+                      key={index}
+                      >
+                      <VehicleCard vehicle={car} />
+                    </div>)
+                }
+                )}
               </div>
             ) : (
               <div>

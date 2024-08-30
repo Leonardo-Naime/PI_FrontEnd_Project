@@ -22,7 +22,6 @@ const Login = () => {
     async function handleSignIn(
       email:any,
       password:any){
-      console.log(email, password)
       await signIn({email, password})
       router.push('/home') 
     }

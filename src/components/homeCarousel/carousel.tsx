@@ -10,9 +10,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import allCars from "@/services/APIs/allVehicles";
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "@/contexts/authContext";
 
 const CarouselSize = () => {
+  const {user} = useContext(AuthContext)
   const [cars, setCars] = useState([])
 
   useEffect(() => {
@@ -21,6 +23,7 @@ const CarouselSize = () => {
       if (useCars) {
         // @ts-ignore
         setCars(useCars.data.content.slice(0, 10))
+
       }
     }
     fetchCars()
