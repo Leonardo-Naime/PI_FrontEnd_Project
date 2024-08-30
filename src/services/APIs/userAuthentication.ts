@@ -4,6 +4,7 @@ const logarUsuario = async (
     email: string, 
     senha: string,
 ) => {
+  console.log(email, senha)
   try {
     const response = await axios.post("http://localhost:8080/auth", {
       email:email,

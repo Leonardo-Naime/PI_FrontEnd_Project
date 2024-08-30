@@ -1,11 +1,11 @@
 import axios from "axios"
 
 type UserUpdate = {
-    nome: string;
-    email: string;
-    senha: string;
-    confirmarSenha: string;
-    fotoDePerfil: string;
+    nome?: string;
+    email?: string;
+    senha?: string;
+    confirmarSenha?: string;
+    fotoDePerfil?: string;
 }
 
 const ProfileChange = async (User:any, UserUpdateDTO:UserUpdate) => {

@@ -6,27 +6,26 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation";
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { AuthContext } from "@/contexts/authContext"
 import Image from 'next/image'
 import { CldImage } from "next-cloudinary"
+import { Eye, EyeOff } from "lucide-react"
 
 
 const Login = () => {
     const router = useRouter();
     const { register, handleSubmit } = useForm();
     const { signIn } = useContext(AuthContext)
+    const [showPassword, setShowPassword] = useState(false);
 
     async function handleSignIn(
       email:any,
       password:any){
+      console.log(email, password)
       await signIn({email, password})
       router.push('/home') 
     }
-
-    const imageLogin = [
-      "cerje1jk1w8zbepdkrlf"
-    ]
     
 
     return (
@@ -65,17 +64,29 @@ const Login = () => {
                   name="email"
                 />
               </div>
-              <div>
+              <div className="relative">
                 <Label className="block mb-2" htmlFor="password">
                   Senha
                 </Label>
                 <Input
                   {...register("password")}
-                  name="password"
                   id="password"
                   placeholder="Digite sua senha"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="pr-10" // Espaço extra para o botão
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-8"
+                >
+                {showPassword ? (
+                    <EyeOff className="w-5 h-5"/>
+                  ):(
+                    <Eye className="w-5 h-5"/>
+                  )}
+                </button>
               </div>
               <div className="text-right">
                 <Link

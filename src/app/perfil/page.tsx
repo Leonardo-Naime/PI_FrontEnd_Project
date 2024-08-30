@@ -1,7 +1,7 @@
 "use client"
 
 import DefaultFooter from "@/components/footer/footer"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CldImage, CldUploadWidget } from 'next-cloudinary'; // Certifique-se de que o CldUploadWidget está importado corretamente
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,6 +19,8 @@ const Perfil = () => {
   const [imagePublicId, setPublicId] = useState<string>('');
   const {user, refreshUserData} = useContext(AuthContext)
   const {register, handleSubmit} = useForm()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = async (data:any) => {
     const fulldata = {
       nome: data?.nome,
@@ -32,17 +34,18 @@ const Perfil = () => {
     refreshUserData()
   }
 
-  
   return (
     <main className="">
       <div className="">
         <Header/>
         <div className="bg-slate-200 w-full h-48 z-0 relative mb-16">
-          <CldUploadWidget uploadPreset="ml_default">
+          <CldUploadWidget 
+          uploadPreset="ml_default">
             {({ open, results }) => {
-              if (results?.event === "success") {
+              if (results?.event === "success" && !isSubmitting) {
                 // console.log("Uploaded image:", results.info);
-                setPublicId(results?.info?.public_id);
+                setPublicId(results?.info?.public_id)
+                handleChange('')
                 // console.log("Public ID:", results?.info?.public_id);
               }
               return (
