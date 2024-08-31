@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import DefaultFooter from "@/components/footer/footer"
-import { useEffect, useState } from 'react';
-import { CldImage, CldUploadWidget } from 'next-cloudinary'; // Certifique-se de que o CldUploadWidget está importado corretamente
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { AuthContext } from "@/contexts/authContext"
-import { useContext } from "react"
+import DefaultFooter from "@/components/footer/footer";
+import { useEffect, useState } from "react";
+import { CldImage, CldUploadWidget } from "next-cloudinary"; // Certifique-se de que o CldUploadWidget está importado corretamente
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { AuthContext } from "@/contexts/authContext";
+import { useContext } from "react";
 import { Eye, EyeOff, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
@@ -15,16 +15,14 @@ import ProfileChange from "@/services/APIs/profileChange";
 import Header from "@/components/header/header";
 import { useRouter } from "next/navigation";
 
-
 const Perfil = () => {
-  const router = useRouter()
-  const [imagePublicId, setPublicId] = useState<string>('');
-  const {user, refreshUserData} = useContext(AuthContext)
-  const {register, handleSubmit} = useForm()
+  const [imagePublicId, setPublicId] = useState<string>("");
+  const { user, refreshUserData } = useContext(AuthContext);
+  const { register, handleSubmit } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = async (data:any) => {
+  const handleChange = async (data: any) => {
     const fulldata = {
       nome: data?.nome,
       email: data?.email,
@@ -33,24 +31,37 @@ const Perfil = () => {
       fotoDePerfil: imagePublicId,
     };
     console.log(fulldata);
-    await ProfileChange(user, fulldata).then(() => {})
+    await ProfileChange(user, fulldata);
     refreshUserData();
+  };
 
-  }
+  useEffect(() => {
+    const fulldata = {
+      fotoDePerfil: imagePublicId,
+    };
+    console.log(fulldata);
+    const x = async () => await ProfileChange(user, fulldata);
+    x();
+    refreshUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imagePublicId]);
 
   return (
     <main className="">
       <div className="">
         <Header />
         <div className="bg-slate-200 w-full h-48 z-0 relative mb-16">
-          <CldUploadWidget uploadPreset="ml_default" onUpload={(results) => {
-            if (results?.event === "success") {
-              setPublicId(results?.info?.public_id);
-              handleChange("");
-              // console.log("Public ID:", results?.info?.public_id);
-            }
-          }}>
-            {({ open, results }) => {
+          <CldUploadWidget
+            uploadPreset="ml_default"
+            onUpload={(results) => {
+              if (results?.event === "success") {
+                setPublicId(results?.info?.public_id);
+                // handleChange("");
+                // console.log("Public ID:", results?.info?.public_id);
+              }
+            }}
+          >
+            {({ open }) => {
               return (
                 <Button
                   className="z-10 bg-[#64BCED] rounded-full w-32 h-32 absolute inset-x-0 bottom-0 transform translate-y-1/2 translate-x-10 border-none p-0"
@@ -77,9 +88,7 @@ const Perfil = () => {
             }}
           </CldUploadWidget>
         </div>
-        <form
-          onSubmit={handleSubmit(handleChange)}
-        >
+        <form onSubmit={handleSubmit(handleChange)}>
           <div className="flex justify-center w-full">
             <Card className="w-[540px] mb-8">
               <CardContent>
@@ -159,8 +168,6 @@ const Perfil = () => {
       </div>
     </main>
   );
-}
-  
-export default Perfil
+};
 
-  
+export default Perfil;
