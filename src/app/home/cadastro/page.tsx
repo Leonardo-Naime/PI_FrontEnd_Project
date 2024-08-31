@@ -14,50 +14,44 @@ import { Eye, EyeOff } from "lucide-react"
 
 const Cadastro = () => {
     const router = useRouter();
-    const { register, handleSubmit, formState: { errors }} = useForm();
+    const { register, handleSubmit, watch, formState: { errors }} = useForm();
     const [showPassword, setShowPassword] = useState(false);
-    const [nome, setNome] = useState('');
-    const [nomeTouched, setNomeTouched] = useState(false);
-    const [email, setEmail] = useState('');
-    const [emailTouched, setEmailTouched] = useState(false);
-    const [password, setPassword] = useState('');
-    const [passwordTouched, setPasswordTouched] = useState(false);
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+    const [nomeFocused, setNomeFocused] = useState(false);
+    const [passwordFocused, setPasswordFocused] = useState(false);
 
-    const handleNomeChange = (event) => {
-      setNome(event.target.value);
-    };
     const handleNomeFocus = () => {
-      setNomeTouched(true);
+      setNomeFocused(true);
     };
+  
     const handleNomeBlur = () => {
-      setNomeTouched(false);
+      setNomeFocused(false);
+    };
+  
+    const handlePasswordFocus = () => {
+      setPasswordFocused(true);
+    };
+  
+    const handlePasswordBlur = () => {
+      setPasswordFocused(false);
     };
 
-    const handlePasswordChange = (event) => {
-      setPassword(event.target.value);
-    };
-    const handlePasswordFocus = () => {
-      setPasswordTouched(true);
-    };
-    const handlePasswordBlur = () => {
-      setPasswordTouched(false);
-    };
+    const nome = watch("nome");
+    const email = watch("email");
+    const password = watch("password");
+    const passwordConfirm = watch("passwordConfirm");
     
-    const handleEmailChange = (event) => {
-      setEmail(event.target.value);
+    const isNomeValid = (nome) => nome.length >= 5 && nome.length <= 15 && /[A-Z]/.test(nome) && /[a-z]/.test(nome);
+    const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isPasswordValid = (password) => {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*()_+=[\]{};':"\\|,.<>?]/.test(password);
+      const hasMinLength = password.length >= 8;
+
+      return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && hasMinLength;
     };
-    const handleEmailBlur = () => {
-      setEmailTouched(true);
-    };
-    
-    const handleConfirmPasswordBlur = () => {
-      setConfirmPasswordTouched(true);
-    };
-    const handleConfirmPasswordChange = (event) => {
-      setConfirmPassword(event.target.value);
-    };
+    const isConfirmPasswordValid = (passwordConfirm) => passwordConfirm === password;
     
     async function handleSignUp(
         nome: string,
@@ -70,12 +64,9 @@ const Cadastro = () => {
             console.log(response)
             router.push('/home/login')
         } catch (error) {
-            console.log(error);
+            console.log("a");
         }
     }
-
-    const isEmailValid = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const isNomeValid = (nome: string | any[]) => nome.length >= 5 && nome.length <= 15 && /[A-Z]/.test(nome) && /[a-z]/.test(nome);
 
     return (
       <div className="min-h-screen bg-[#f3f4f6] flex justify-end">
@@ -114,11 +105,10 @@ const Cadastro = () => {
                   id="user"
                   placeholder="Ex: jonasBrothers"
                   name="nome"
-                  onChange={handleNomeChange}
                   onFocus={handleNomeFocus}
                   onBlur={handleNomeBlur}
                 />
-                {nomeTouched && (
+                {nomeFocused && (
                   <ul className="text-sm">
                     <li
                       className={
@@ -155,12 +145,10 @@ const Cadastro = () => {
                   id="email"
                   placeholder="Digite seu e-mail"
                   name="email"
-                  onChange={handleEmailChange}
-                  onBlur={handleEmailBlur}
                 />
-                {emailTouched && !isEmailValid(email) && (
-                <p className="text-red-500 text-sm">E-mail inválido</p>
-              )}
+                {email && !isEmailValid(email) && (
+                  <p className="text-red-500 text-sm">E-mail inválido</p>
+                )}
               </div>
               <div className="relative">
                 <Label className="block mb-2" htmlFor="password">
@@ -172,13 +160,11 @@ const Cadastro = () => {
                   placeholder="Digite sua senha"
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  className="pr-10" // Espaço extra para o botão
-                  onChange={handlePasswordChange}
                   onFocus={handlePasswordFocus}
                   onBlur={handlePasswordBlur}
-                  
+                  className="pr-10" // Espaço extra para o botão
                 />
-                {passwordTouched && (
+                {passwordFocused && (
                   <ul className="text-sm">
                   <li
                     className={
@@ -230,27 +216,25 @@ const Cadastro = () => {
                 </button>
               </div>
               <div>
-                <Label className="block mb-2" htmlFor="passwordconfirm">
+                <Label className="block mb-2" htmlFor="passwordConfirm">
                   Confirmar senha
                 </Label>
                 <Input
                 {...register("passwordConfirm", {
                   validate: (value) => value === password,
                 })}
-                onChange={handleConfirmPasswordChange}
-                onBlur={handleConfirmPasswordBlur}
-                id="passwordconfirm"
+                id="passwordConfirm"
                 placeholder="Confirme sua senha "
                 type={showPassword ? "text" : "password"}
                 name="passwordConfirm"
               />
-              {confirmPasswordTouched && confirmPassword !== password && (
-                <p className="text-red-500 text-sm">As senhas não coincidem</p>
-              )}
+              {passwordConfirm && !isConfirmPasswordValid(passwordConfirm) && (
+                  <p className="text-red-500 text-sm">As senhas não coincidem</p>
+                )}
               </div>
 
               <div className="justify-center flex">
-                <Button className="w-full bg-[#64BCED]" type="submit">
+                <Button className="w-full bg-[#64BCED]">
                   Registrar
                 </Button>
               </div>
