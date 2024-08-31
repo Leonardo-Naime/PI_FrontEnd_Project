@@ -60,10 +60,10 @@ const Cadastro = () => {
     };
     
     async function handleSignUp(
-        nome: any,
-        email: any,
-        password: any,
-        passwordConfirm: any,) {
+        nome: string,
+        email: string,
+        password: string,
+        passwordConfirm: string,) {
         console.log('Dados da requisição:', nome, email, password, passwordConfirm);
         try{
             const response = await registrarUsuario(nome, email, password, passwordConfirm)
