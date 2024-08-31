@@ -14,9 +14,9 @@ import { Eye, EyeOff } from "lucide-react"
 
 const Cadastro = () => {
     const router = useRouter();
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, formState: { errors }, getValues } = useForm();
     const [showPassword, setShowPassword] = useState(false);
-    
+    const currentValue = getValues('nome'); // obtém o valor atual do campo "nome"
     async function handleSignUp(
         nome: string,
         email: string,
@@ -44,13 +44,6 @@ const Cadastro = () => {
             alt="carImage"
             src="wzfs0jgf4u5wfckqs6ju"
           />
-          {/* <Image
-                  className="h-full "
-                  src={"https://placehold.co/1920x1080/png"}
-                  alt="Workflow"
-                  width={1920}
-                  height={1080}
-                /> */}
         </div>
         <div className="bg-white p-10 rounded-lg shadow-lg w-96 flex items-center">
           <div className="w-full">
@@ -85,24 +78,37 @@ const Cadastro = () => {
                   E-mail
                 </Label>
                 <Input
-                  {...register("email")}
+                  {...register("email", {
+                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  })}
                   id="email"
                   placeholder="Digite seu e-mail"
                   name="email"
                 />
+                {errors.email && (
+                <div className="text-red-500 text-sm">E-mail inválido</div>
+                )}
               </div>
               <div className="relative">
                 <Label className="block mb-2" htmlFor="password">
                   Senha
                 </Label>
                 <Input
-                  {...register("password")}
+                  {...register("password", {
+                    minLength: 8,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  })}
                   id="password"
                   placeholder="Digite sua senha"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   className="pr-10" // Espaço extra para o botão
                 />
+                {errors.password && (
+                  <div className="text-red-500 text-sm">
+                    Senha inválida. Deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial.
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -120,12 +126,17 @@ const Cadastro = () => {
                   Confirmar senha
                 </Label>
                 <Input
-                  {...register("passwordConfirm")}
-                  id="passwordconfirm"
-                  placeholder="Confirme sua senha "
-                  type={showPassword ? "text" : "password"}
-                  name="passwordConfirm"
-                />
+                {...register("passwordConfirm", {
+                  validate: (value) => value === getValues("password"),
+                })}
+                id="passwordconfirm"
+                placeholder="Confirme sua senha "
+                type={showPassword ? "text" : "password"}
+                name="passwordConfirm"
+              />
+              {errors.passwordConfirm && (
+                <div className="text-red-500 text-sm">Senhas não coincidem</div>
+              )}
               </div>
 
               <div className="justify-center flex">
