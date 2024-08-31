@@ -14,15 +14,57 @@ import { Eye, EyeOff } from "lucide-react"
 
 const Cadastro = () => {
     const router = useRouter();
-    const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+    const { register, handleSubmit, formState: { errors }} = useForm();
     const [showPassword, setShowPassword] = useState(false);
-    const currentValue = getValues('nome'); // obtém o valor atual do campo "nome"
+    const [nome, setNome] = useState('');
+    const [nomeTouched, setNomeTouched] = useState(false);
+    const [email, setEmail] = useState('');
+    const [emailTouched, setEmailTouched] = useState(false);
+    const [password, setPassword] = useState('');
+    const [passwordTouched, setPasswordTouched] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+
+    const handleNomeChange = (event) => {
+      setNome(event.target.value);
+    };
+    const handleNomeFocus = () => {
+      setNomeTouched(true);
+    };
+    const handleNomeBlur = () => {
+      setNomeTouched(false);
+    };
+
+    const handlePasswordChange = (event) => {
+      setPassword(event.target.value);
+    };
+    const handlePasswordFocus = () => {
+      setPasswordTouched(true);
+    };
+    const handlePasswordBlur = () => {
+      setPasswordTouched(false);
+    };
+    
+    const handleEmailChange = (event) => {
+      setEmail(event.target.value);
+    };
+    const handleEmailBlur = () => {
+      setEmailTouched(true);
+    };
+    
+    const handleConfirmPasswordBlur = () => {
+      setConfirmPasswordTouched(true);
+    };
+    const handleConfirmPasswordChange = (event) => {
+      setConfirmPassword(event.target.value);
+    };
+    
     async function handleSignUp(
-        nome: string,
-        email: string,
-        password: string,
-        passwordConfirm: string,) {
-        // console.log(data);
+        nome: any,
+        email: any,
+        password: any,
+        passwordConfirm: any,) {
+        console.log('Dados da requisição:', nome, email, password, passwordConfirm);
         try{
             const response = await registrarUsuario(nome, email, password, passwordConfirm)
             console.log(response)
@@ -30,9 +72,10 @@ const Cadastro = () => {
         } catch (error) {
             console.log(error);
         }
-        
-
     }
+
+    const isEmailValid = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isNomeValid = (nome: string | any[]) => nome.length >= 5 && nome.length <= 15 && /[A-Z]/.test(nome) && /[a-z]/.test(nome);
 
     return (
       <div className="min-h-screen bg-[#f3f4f6] flex justify-end">
@@ -71,7 +114,35 @@ const Cadastro = () => {
                   id="user"
                   placeholder="Ex: jonasBrothers"
                   name="nome"
+                  onChange={handleNomeChange}
+                  onFocus={handleNomeFocus}
+                  onBlur={handleNomeBlur}
                 />
+                {nomeTouched && (
+                  <ul className="text-sm">
+                    <li
+                      className={
+                        nome.length >= 5 && nome.length <= 15 ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Entre 5 e 15 caracteres
+                    </li>
+                    <li
+                      className={
+                        /[A-Z]/.test(nome) ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Uma letra maiúscula
+                    </li>
+                    <li
+                      className={
+                        /[a-z]/.test(nome) ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Uma letra minúscula
+                    </li>
+                  </ul>
+                )}
               </div>
               <div>
                 <Label className="block mb-2" htmlFor="email">
@@ -84,34 +155,71 @@ const Cadastro = () => {
                   id="email"
                   placeholder="Digite seu e-mail"
                   name="email"
+                  onChange={handleEmailChange}
+                  onBlur={handleEmailBlur}
                 />
-                {errors.email && (
-                <div className="text-red-500 text-sm">E-mail inválido</div>
-                )}
+                {emailTouched && !isEmailValid(email) && (
+                <p className="text-red-500 text-sm">E-mail inválido</p>
+              )}
               </div>
               <div className="relative">
                 <Label className="block mb-2" htmlFor="password">
                   Senha
                 </Label>
                 <Input
-                  {...register("password", {
-                    minLength: 8,
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  })}
+                  {...register("password")}
                   id="password"
                   placeholder="Digite sua senha"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   className="pr-10" // Espaço extra para o botão
+                  onChange={handlePasswordChange}
+                  onFocus={handlePasswordFocus}
+                  onBlur={handlePasswordBlur}
+                  
                 />
-                {errors.password && (
-                  <div className="text-red-500 text-sm">
-                    Senha inválida. Deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial.
-                  </div>
-                )}
+                {passwordTouched && (
+                  <ul className="text-sm">
+                  <li
+                    className={
+                      password.length >= 8 ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Pelo menos 8 caracteres
+                  </li>
+                  <li
+                    className={
+                      /[A-Z]/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Uma letra maiúscula
+                  </li>
+                  <li
+                    className={
+                      /[a-z]/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Uma letra minúscula
+                  </li>
+                  <li
+                    className={
+                      /\d/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Um número
+                  </li>
+                  <li
+                    className={
+                      /[@$!%*?&]/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Um caractere especial
+                  </li>
+                </ul>
+              )}
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-2 top-8"
                 >
                   {showPassword ? (
@@ -122,25 +230,29 @@ const Cadastro = () => {
                 </button>
               </div>
               <div>
-                <Label className="block mb-2" htmlFor="passwordconfirm">
+                <Label className="block mb-2" htmlFor="passwordConfirm">
                   Confirmar senha
                 </Label>
                 <Input
                 {...register("passwordConfirm", {
-                  validate: (value) => value === getValues("password"),
+                  validate: (value) => value === password,
                 })}
-                id="passwordconfirm"
+                onChange={handleConfirmPasswordChange}
+                onBlur={handleConfirmPasswordBlur}
+                id="passwordConfirm"
                 placeholder="Confirme sua senha "
                 type={showPassword ? "text" : "password"}
                 name="passwordConfirm"
               />
-              {errors.passwordConfirm && (
-                <div className="text-red-500 text-sm">Senhas não coincidem</div>
+              {confirmPasswordTouched && confirmPassword !== password && (
+                <p className="text-red-500 text-sm">As senhas não coincidem</p>
               )}
               </div>
 
               <div className="justify-center flex">
-                <Button className="w-40 bg-[#64BCED]">Entrar</Button>
+                <Button className="w-full bg-[#64BCED]" type="submit">
+                  Registrar
+                </Button>
               </div>
               <div className="text-center">
                 <span className="text-sm">Ja tem sua conta? </span>
