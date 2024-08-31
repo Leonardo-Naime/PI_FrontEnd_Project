@@ -230,7 +230,7 @@ const Cadastro = () => {
                 </button>
               </div>
               <div>
-                <Label className="block mb-2" htmlFor="passwordConfirm">
+                <Label className="block mb-2" htmlFor="passwordconfirm">
                   Confirmar senha
                 </Label>
                 <Input
@@ -239,7 +239,7 @@ const Cadastro = () => {
                 })}
                 onChange={handleConfirmPasswordChange}
                 onBlur={handleConfirmPasswordBlur}
-                id="passwordConfirm"
+                id="passwordconfirm"
                 placeholder="Confirme sua senha "
                 type={showPassword ? "text" : "password"}
                 name="passwordConfirm"
