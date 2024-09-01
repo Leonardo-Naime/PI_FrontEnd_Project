@@ -15,6 +15,7 @@ export async function openSessionToken() {
         // verifica se a assinatura do token é valida (cai no catch caso nao for)
         const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_AUTH_SECRET);
         const { payload } = await jose.jwtVerify(sessionToken.value, secret);
+        console.log(payload)
         // verifica se o token expirou
         // if( (payload.exp as number) * 1000 > new Date().getTime() ) return null;
 
