@@ -14,24 +14,75 @@ import { Eye, EyeOff } from "lucide-react"
 
 const Cadastro = () => {
     const router = useRouter();
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }} = useForm();
     const [showPassword, setShowPassword] = useState(false);
+    const [nomeFocused, setNomeFocused] = useState(false);
+    const [passwordFocused, setPasswordFocused] = useState(false);
+    const [erro, setErro] = useState('');
+
+    const handleNomeFocus = () => {
+      setNomeFocused(true);
+    };
+  
+    const handleNomeBlur = () => {
+      setNomeFocused(false);
+    };
+  
+    const handlePasswordFocus = () => {
+      setPasswordFocused(true);
+    };
+  
+    const handlePasswordBlur = () => {
+      setPasswordFocused(false);
+    };
+
+    const nome = watch("nome");
+    const email = watch("email");
+    const password = watch("password");
+    const passwordConfirm = watch("passwordConfirm");
+    
+    const isNomeValid = (nome) => nome.length >= 5 && nome.length <= 15 && /[A-Z]/.test(nome) && /[a-z]/.test(nome);
+    const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isPasswordValid = (password) => {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*()_+=[\]{};':"\\|,.<>?]/.test(password);
+      const hasMinLength = password.length >= 8;
+
+      return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && hasMinLength;
+    };
+    const isConfirmPasswordValid = (passwordConfirm) => passwordConfirm === password;
     
     async function handleSignUp(
         nome: string,
         email: string,
         password: string,
         passwordConfirm: string,) {
-        // console.log(data);
+          if (!isNomeValid(nome)) {
+            setErro('Nome inválido');
+            return;
+          }
+          if (!isEmailValid(email)) {
+            setErro('E-mail inválido');
+            return;
+          }
+          if (!isPasswordValid(password)) {
+            setErro('Senha inválida');
+            return;
+          }
+          if (!isConfirmPasswordValid(passwordConfirm)) {
+            setErro('Senha diferente da original');
+            return;
+          }
+        console.log('Dados da requisição:', nome, email, password, passwordConfirm);
         try{
             const response = await registrarUsuario(nome, email, password, passwordConfirm)
             console.log(response)
             router.push('/home/login')
         } catch (error) {
-            console.log(error);
+            console.log("a");
         }
-        
-
     }
 
     return (
@@ -44,13 +95,6 @@ const Cadastro = () => {
             alt="carImage"
             src="wzfs0jgf4u5wfckqs6ju"
           />
-          {/* <Image
-                  className="h-full "
-                  src={"https://placehold.co/1920x1080/png"}
-                  alt="Workflow"
-                  width={1920}
-                  height={1080}
-                /> */}
         </div>
         <div className="bg-white p-10 rounded-lg shadow-lg w-96 flex items-center">
           <div className="w-full">
@@ -78,18 +122,50 @@ const Cadastro = () => {
                   id="user"
                   placeholder="Ex: jonasBrothers"
                   name="nome"
+                  onFocus={handleNomeFocus}
+                  onBlur={handleNomeBlur}
                 />
+                {nomeFocused && (
+                  <ul className="text-sm">
+                    <li
+                      className={
+                        nome.length >= 5 && nome.length <= 15 ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Entre 5 e 15 caracteres
+                    </li>
+                    <li
+                      className={
+                        /[A-Z]/.test(nome) ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Uma letra maiúscula
+                    </li>
+                    <li
+                      className={
+                        /[a-z]/.test(nome) ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Uma letra minúscula
+                    </li>
+                  </ul>
+                )}
               </div>
               <div>
                 <Label className="block mb-2" htmlFor="email">
                   E-mail
                 </Label>
                 <Input
-                  {...register("email")}
+                  {...register("email", {
+                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  })}
                   id="email"
                   placeholder="Digite seu e-mail"
                   name="email"
                 />
+                {email && !isEmailValid(email) && (
+                  <p className="text-red-500 text-sm">E-mail inválido</p>
+                )}
               </div>
               <div className="relative">
                 <Label className="block mb-2" htmlFor="password">
@@ -101,11 +177,52 @@ const Cadastro = () => {
                   placeholder="Digite sua senha"
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  onFocus={handlePasswordFocus}
+                  onBlur={handlePasswordBlur}
                   className="pr-10" // Espaço extra para o botão
                 />
+                {passwordFocused && (
+                  <ul className="text-sm">
+                  <li
+                    className={
+                      password.length >= 8 ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Pelo menos 8 caracteres
+                  </li>
+                  <li
+                    className={
+                      /[A-Z]/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Uma letra maiúscula
+                  </li>
+                  <li
+                    className={
+                      /[a-z]/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Uma letra minúscula
+                  </li>
+                  <li
+                    className={
+                      /\d/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Um número
+                  </li>
+                  <li
+                    className={
+                      /[@$!%*?&]/.test(password) ? "text-green-500" : "text-black"
+                    }
+                    >
+                    • Um caractere especial
+                  </li>
+                </ul>
+              )}
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-2 top-8"
                 >
                   {showPassword ? (
@@ -116,30 +233,40 @@ const Cadastro = () => {
                 </button>
               </div>
               <div>
-                <Label className="block mb-2" htmlFor="passwordconfirm">
+                <Label className="block mb-2" htmlFor="passwordConfirm">
                   Confirmar senha
                 </Label>
                 <Input
-                  {...register("passwordConfirm")}
-                  id="passwordconfirm"
-                  placeholder="Confirme sua senha "
-                  type={showPassword ? "text" : "password"}
-                  name="passwordConfirm"
-                />
+                {...register("passwordConfirm", {
+                  validate: (value) => value === password,
+                })}
+                id="passwordConfirm"
+                placeholder="Confirme sua senha "
+                type={showPassword ? "text" : "password"}
+                name="passwordConfirm"
+              />
+              {passwordConfirm && !isConfirmPasswordValid(passwordConfirm) && (
+                  <p className="text-red-500 text-sm">As senhas não coincidem</p>
+                )}
               </div>
 
               <div className="justify-center flex">
-                <Button className="w-40 bg-[#64BCED]">Entrar</Button>
+                <Button className="w-full bg-[#64BCED]">
+                  Registrar
+                </Button>
               </div>
               <div className="text-center">
                 <span className="text-sm">Ja tem sua conta? </span>
                 <Link
                   className="text-sm text-blue-600 hover:underline"
                   href="/home/login"
-                >
+                  >
                   Entrar
                 </Link>
               </div>
+                  {erro && (
+                    <div className="text-red-500 text-center">{erro}</div>
+                  )}
             </form>
           </div>
         </div>
