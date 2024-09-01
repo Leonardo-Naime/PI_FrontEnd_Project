@@ -18,13 +18,17 @@ const Login = () => {
     const { register, handleSubmit } = useForm();
     const { signIn } = useContext(AuthContext)
     const [showPassword, setShowPassword] = useState(false);
+    const [erro, setErro] = useState('');
 
     async function handleSignIn(
       email:any,
       password:any){
-      await signIn({email, password})
-      router.push('/home') 
-    }
+      try {
+        await signIn({ email, password });
+        router.push('/home');
+    } catch (error) {
+      setErro('E-mail ou senha incorretos');
+    }}
     
 
     return (
@@ -95,6 +99,9 @@ const Login = () => {
                   Esqueci minha senha
                 </Link>
               </div>
+              {erro && (
+              <div className="text-red-500 text-center">{erro}</div>
+              )}
               <Button className="w-full bg-[#64BCED]" type="submit">
                 Entrar
               </Button>
