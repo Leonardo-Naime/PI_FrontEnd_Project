@@ -18,6 +18,7 @@ const Cadastro = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [nomeFocused, setNomeFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
+    const [erro, setErro] = useState('');
 
     const handleNomeFocus = () => {
       setNomeFocused(true);
@@ -58,6 +59,22 @@ const Cadastro = () => {
         email: string,
         password: string,
         passwordConfirm: string,) {
+          if (!isNomeValid(nome)) {
+            setErro('Nome inválido');
+            return;
+          }
+          if (!isEmailValid(email)) {
+            setErro('E-mail inválido');
+            return;
+          }
+          if (!isPasswordValid(password)) {
+            setErro('Senha inválida');
+            return;
+          }
+          if (!isConfirmPasswordValid(passwordConfirm)) {
+            setErro('Senha diferente da original');
+            return;
+          }
         console.log('Dados da requisição:', nome, email, password, passwordConfirm);
         try{
             const response = await registrarUsuario(nome, email, password, passwordConfirm)
@@ -243,10 +260,13 @@ const Cadastro = () => {
                 <Link
                   className="text-sm text-blue-600 hover:underline"
                   href="/home/login"
-                >
+                  >
                   Entrar
                 </Link>
               </div>
+                  {erro && (
+                    <div className="text-red-500 text-center">{erro}</div>
+                  )}
             </form>
           </div>
         </div>
