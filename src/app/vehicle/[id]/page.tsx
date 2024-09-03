@@ -206,20 +206,20 @@ const BuyCar = () => {
             <div className="flex space-x-28 items-end pl-10 pb-10">
               <div>
                 <div>
-                  <h1>
+                  <h1 className= "text-3xl font-light">
                     {Car?.marca}{" "}
-                    <span className="font-bold">
+                    <span className="font-bold text-3xl">
                       {Car?.modelo.split(" ")[0]}
                     </span>
                   </h1>
                 </div>
-                <div>
-                  <h2 className="font-semibold text-gray-600">{Car?.modelo}</h2>
+                <div className="pt-5">
+                  <h2 className="font-semibold text-xl text-gray-600">{Car?.modelo}</h2>
                 </div>
               </div>
               <div className="flex space-x-28 items-end">
-                <div className="text-gray-600">valor FIPE R$ {"109,000"}</div>
-                <div className="font-semibold text-gray-600">
+                <div className="text-gray-600 text-lg">valor FIPE R$ {"109,000"}</div>
+                <div className="font-semibold text-lg text-gray-600">
                   por R${" "}
                   <span className="text-red-600 text-3xl">{Car?.preco}</span>
                 </div>
