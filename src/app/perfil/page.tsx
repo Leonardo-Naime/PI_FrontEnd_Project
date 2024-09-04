@@ -18,11 +18,47 @@ import { useRouter } from "next/navigation";
 const Perfil = () => {
   const [imagePublicId, setPublicId] = useState<string>("");
   const { user, refreshUserData } = useContext(AuthContext);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [nomeFocused, setNomeFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
-  const handleChange = async (data: any) => {
+  const nome = watch("nome");
+  const email = watch("email");
+  const password = watch("password");
+  const passwordConfirm = watch("passwordConfirm");
+
+  const isNomeValid = (nome) => nome.length >= 5 && nome.length <= 15 && /[A-Z]/.test(nome) && /[a-z]/.test(nome);
+    const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isPasswordValid = (password) => {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*()_+=[\]{};':"\\|,.<>?]/.test(password);
+      const hasMinLength = password.length >= 8;
+
+      return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && hasMinLength;
+    };
+    const isConfirmPasswordValid = (passwordConfirm) => passwordConfirm === password;
+
+    const handleNomeFocus = () => {
+      setNomeFocused(true);
+    };
+  
+    const handleNomeBlur = () => {
+      setNomeFocused(false);
+    };
+  
+    const handlePasswordFocus = () => {
+      setPasswordFocused(true);
+    };
+  
+    const handlePasswordBlur = () => {
+      setPasswordFocused(false);
+    };
+
+    const handleChange = async (data: any) => {
     const fulldata = {
       nome: data?.nome,
       email: data?.email,
@@ -96,25 +132,57 @@ const Perfil = () => {
                 <div className="space-y-4">
                   <div className="">
                     <Label className="block mb-2" id="nome" htmlFor="nome">
-                      NomeDeUsuário
+                      Nome de usuário
                     </Label>
                     <Input
                       defaultValue={user?.nome}
                       {...register("nome")}
                       name="nome"
                       id="nome"
+                      onFocus={handleNomeFocus}
+                      onBlur={handleNomeBlur}
                     ></Input>
+                    {nomeFocused && (
+                  <ul className="text-sm">
+                    <li
+                      className={
+                        nome.length >= 5 && nome.length <= 15 ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Entre 5 e 15 caracteres
+                    </li>
+                    <li
+                      className={
+                        /[A-Z]/.test(nome) ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Uma letra maiúscula
+                    </li>
+                    <li
+                      className={
+                        /[a-z]/.test(nome) ? "text-green-500" : "text-black"
+                      }
+                    >
+                      • Uma letra minúscula
+                    </li>
+                  </ul>
+                )}
                   </div>
                   <div className="">
                     <Label className="block mb-2" id="email" htmlFor="email">
-                      Email
+                      E-mail
                     </Label>
                     <Input
                       defaultValue={user?.email}
-                      {...register("email")}
+                      {...register("email", {
+                        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      })}
                       name="email"
                       id="email"
                     ></Input>
+                    {email && !isEmailValid(email) && (
+                      <p className="text-red-500 text-sm">E-mail inválido</p>
+                    )}
                   </div>
                   <div className="relative">
                     <Label className="block mb-2" htmlFor="password">
@@ -126,8 +194,49 @@ const Perfil = () => {
                       placeholder="Digite sua senha"
                       type={showPassword ? "text" : "password"}
                       name="password"
+                      onFocus={handlePasswordFocus}
+                      onBlur={handlePasswordBlur}
                       className="pr-10"
                     />
+                    {passwordFocused && (
+                      <ul className="text-sm">
+                        <li
+                          className={
+                            password.length >= 8 ? "text-green-500" : "text-black"
+                          }
+                          >
+                          • Pelo menos 8 caracteres
+                        </li>
+                        <li
+                          className={
+                            /[A-Z]/.test(password) ? "text-green-500" : "text-black"
+                          }
+                          >
+                          • Uma letra maiúscula
+                        </li>
+                        <li
+                          className={
+                            /[a-z]/.test(password) ? "text-green-500" : "text-black"
+                          }
+                          >
+                          • Uma letra minúscula
+                        </li>
+                        <li
+                          className={
+                            /\d/.test(password) ? "text-green-500" : "text-black"
+                          }
+                          >
+                          • Um número
+                        </li>
+                        <li
+                          className={
+                            /[@$!%*?&]/.test(password) ? "text-green-500" : "text-black"
+                          }
+                          >
+                          • Um caractere especial
+                        </li>
+                      </ul>
+                    )}
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
@@ -145,12 +254,17 @@ const Perfil = () => {
                       Confirmar senha
                     </Label>
                     <Input
-                      {...register("passwordConfirm")}
+                      {...register("passwordConfirm", {
+                        validate: (value) => value === password,
+                      })}
                       id="passwordConfirm"
                       placeholder="Confirme sua senha "
                       type={showPassword ? "text" : "password"}
                       name="passwordConfirm"
                     />
+                    {passwordConfirm && !isConfirmPasswordValid(passwordConfirm) && (
+                      <p className="text-red-500 text-sm">As senhas não coincidem</p>
+                    )}
                   </div>
                   <div className="flex justify-end">
                     <Button className="bg-[#64BCED] hover:bg-[#1d465c]">
