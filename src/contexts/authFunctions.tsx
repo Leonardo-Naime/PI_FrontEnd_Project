@@ -17,7 +17,6 @@ export async function openSessionToken() {
         const { payload } = await jose.jwtVerify(sessionToken.value, secret);
         // verifica se o token expirou
         // if( (payload.exp as number) * 1000 > new Date().getTime() ) return null;
-
         // retorna o payload do token
         return payload;
     } catch (e){
