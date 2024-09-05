@@ -167,7 +167,7 @@ const BuyCar = () => {
       setUsers(allusers);
     };
     FetchUsers();
-  }, [users]);
+  }, []);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -263,12 +263,12 @@ const BuyCar = () => {
               <div className="flex justify-center">
                 {user?.id === Car?.user.id || user?.admState ? (
                   <div>
-                    {/* <ScrollArea className="h-96 w-[540px] rounded-md border">
+                    <ScrollArea className="h-96 w-[540px] rounded-md border">
                       <div>
                         {users.map((object, index) => (
                           <>
                             <div key={index} className="flex items-center justify-between">
-                              <div className="flex items-center">
+                              <div className="flex items-center py-1">
                                 <div className="ml-10">
                                   {object?.fotoDePerfil ? (
                                     <CldImage
@@ -293,7 +293,7 @@ const BuyCar = () => {
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
                                     <Button className="bg-[#64BCED] h-6 rounded-lg">
-                                      Editar
+                                      Envie uma mensagem!
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent className="bg-white p-0">
@@ -305,7 +305,7 @@ const BuyCar = () => {
                           </>
                         ))}
                       </div>
-                    </ScrollArea> */}
+                    </ScrollArea>
                     <Button
                       onClick={handleClick}
                       className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}
