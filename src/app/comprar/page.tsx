@@ -20,9 +20,16 @@ import { ArrowDown, Filter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import SearchBar from "@/services/APIs/search";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import OpenedFilter from "@/components/filter/filter";
 
 type Car = {
   id: string;
@@ -42,48 +49,40 @@ const Comprar = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPageNumber, setCurrentPageNumber] = useState(0);
-  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [searchedCars, setSearchedCars] = useState<Car[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { register, handleSubmit } = useForm();
+
+  const handleFilter = (yearMinMax: any) => {
+    console.log(yearMinMax);
+  };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-  
-  const { register, handleSubmit } = useForm();
 
   const handleSearch = async (searchData: any) => {
     const searchQuery = searchData.search;
-    setSearchTerm(searchQuery); // Atualize o termo de pesquisa
+    setSearchTerm(searchQuery);
     const response = await SearchBar(searchQuery, pageNumber);
-    
+
     if (response && response.data) {
-      setSearchedCars(response.data.content); // Atualize os carros pesquisados
-      setTotalPages(response.data.totalPages); // Atualize o número total de páginas com base na pesquisa
+      setSearchedCars(response.data.content);
+      setTotalPages(response.data.totalPages);
     }
   };
 
   useEffect(() => {
     const fetchCars = async () => {
-      if (searchTerm) {
-        // Se há um termo de pesquisa, use a função de busca
-        const response = await SearchBar(searchTerm, pageNumber);
-        if (response && response.data) {
-          setSearchedCars(response.data.content);
-          setTotalPages(response.data.totalPages);
-        }
-      } else {
-        // Caso contrário, use todos os carros
-        const useCars = await allCars(pageNumber);
-        if (useCars) {
-          setCars(useCars.data.content);
-          setTotalPages(useCars.data.totalPages);
-        }
+      const useCars = await allCars(pageNumber);
+      if (useCars) {
+        setCars(useCars.data.content);
+        setTotalPages(useCars.data.totalPages);
       }
     };
     fetchCars();
-  }, [pageNumber, searchTerm]);
+  }, [pageNumber]);
 
   const handlePageChange = (pageNumber: number) => {
     setPageNumber(pageNumber);
@@ -105,13 +104,7 @@ const Comprar = () => {
               <Filter />
               Filtrar
             </Button>
-            {isDropdownOpen && (
-              <div className=" left-0 right-0 bg-white border shadow-md p-4 mt-2">
-                <p>Opção de filtro 1</p>
-                <p>Opção de filtro 2</p>
-                <p>Opção de filtro 3</p>
-              </div>
-            )}
+            {isDropdownOpen && <OpenedFilter onFilter={handleFilter} />}
           </div>
           <form
             className="flex w-80 top-0 left-24 self-start absolute"
