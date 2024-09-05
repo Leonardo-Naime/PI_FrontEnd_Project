@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import registrarUsuario from "@/services/APIs/userRegistration"
-import Image from 'next/image'
-import { CldImage } from "next-cloudinary"
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import registrarUsuario from "@/services/APIs/userRegistration";
+import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react";
 
 const Cadastro = () => {
     const router = useRouter();
@@ -250,6 +250,26 @@ const Cadastro = () => {
                 )}
               </div>
 
+            <div className="justify-center flex">
+              <Button className="w-40 bg-[#64BCED]">Entrar</Button>
+            </div>
+            <div className="text-center">
+              <span className="text-sm">Ja tem sua conta? </span>
+              <Link
+                className="text-sm text-blue-600 hover:underline"
+                href="/home/login"
+              >
+                Entrar
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Cadastro;
               <div className="justify-center flex">
                 <Button className="w-full bg-[#64BCED]">
                   Registrar
@@ -273,5 +293,3 @@ const Cadastro = () => {
       </div>
     );
 }
-
-export default Cadastro

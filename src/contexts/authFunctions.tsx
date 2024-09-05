@@ -18,7 +18,6 @@ export async function openSessionToken() {
         console.log(payload)
         // verifica se o token expirou
         // if( (payload.exp as number) * 1000 > new Date().getTime() ) return null;
-
         // retorna o payload do token
         return payload;
     } catch (e){
