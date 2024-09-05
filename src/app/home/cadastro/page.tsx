@@ -270,26 +270,4 @@ const Cadastro = () => {
 };
 
 export default Cadastro;
-              <div className="justify-center flex">
-                <Button className="w-full bg-[#64BCED]">
-                  Registrar
-                </Button>
-              </div>
-              <div className="text-center">
-                <span className="text-sm">Ja tem sua conta? </span>
-                <Link
-                  className="text-sm text-blue-600 hover:underline"
-                  href="/home/login"
-                  >
-                  Entrar
-                </Link>
-              </div>
-                  {erro && (
-                    <div className="text-red-500 text-center">{erro}</div>
-                  )}
-            </form>
-          </div>
-        </div>
-      </div>
-    );
-}
+              
