@@ -65,7 +65,7 @@ const Perfil = () => {
       nome: data?.nome,
       email: data?.email,
       senha: data?.password,
-      confirmarSenha: data?.confirmPassword,
+      confirmarSenha: data?.passwordConfirm,
       fotoDePerfil: imagePublicId,
     };
     console.log(fulldata);
