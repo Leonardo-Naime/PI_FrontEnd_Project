@@ -23,6 +23,7 @@ const Perfil = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [nomeFocused, setNomeFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const nome = watch("nome");
   const email = watch("email");
@@ -59,6 +60,7 @@ const Perfil = () => {
     };
 
     const handleChange = async (data: any) => {
+    setHasChanges(true);
     const fulldata = {
       nome: data?.nome,
       email: data?.email,
@@ -75,10 +77,12 @@ const Perfil = () => {
     const fulldata = {
       fotoDePerfil: imagePublicId,
     };
-    console.log(fulldata);
+    //console.log(fulldata);
     const x = async () => await ProfileChange(user, fulldata);
     x();
-    refreshUserData();
+    if (hasChanges) {
+      refreshUserData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imagePublicId]);
 
@@ -267,7 +271,7 @@ const Perfil = () => {
                     )}
                   </div>
                   <div className="flex justify-end">
-                    <Button className="bg-[#64BCED] hover:bg-[#1d465c]">
+                    <Button className="bg-[#64BCED] hover:bg-[#1d465c]" onClick={() => setHasChanges(true)}>
                       Finalizar
                     </Button>
                   </div>
