@@ -251,7 +251,7 @@ const Cadastro = () => {
               </div>
 
             <div className="justify-center flex">
-              <Button className="w-40 bg-[#64BCED]">Entrar</Button>
+              <Button className="w-40 bg-[#64BCED]">Registrar</Button>
             </div>
             <div className="text-center">
               <span className="text-sm">Ja tem sua conta? </span>
