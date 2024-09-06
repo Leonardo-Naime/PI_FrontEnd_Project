@@ -19,17 +19,8 @@ import { Input } from "@/components/ui/input";
 import { ArrowDown, Filter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import SearchBar from "@/services/APIs/search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { Slider } from "@/components/ui/slider";
-import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
 import OpenedFilter from "@/components/filter/filter";
+import FilterAll from "@/services/APIs/filter";
 
 type Car = {
   id: string;
@@ -43,6 +34,14 @@ type Car = {
   user: any;
 };
 
+type Data = {
+  yearMin:string,
+  yearMax:string,
+  precoMin:number,
+  precoMax:number,
+  marca:string
+}
+
 const Comprar = () => {
   const { user } = useContext(AuthContext);
   const [cars, setCars] = useState<Car[]>([]);
@@ -53,36 +52,38 @@ const Comprar = () => {
   const [searchedCars, setSearchedCars] = useState<Car[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { register, handleSubmit } = useForm();
-
-  const handleFilter = (yearMinMax: any) => {
-    console.log(yearMinMax);
-  };
-
+  const [searched, setSearched] = useState('')
+  const [filtered, setFiltered] = useState<Data>({
+    yearMin: '',
+    yearMax: '',
+    precoMin: 0,
+    precoMax: 1000000,
+    marca: ''
+  });
+  const [filterFlag, setFilterFlag] = useState<boolean>(false)
+  
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-
-  const handleSearch = async (searchData: any) => {
-    const searchQuery = searchData.search;
-    setSearchTerm(searchQuery);
-    const response = await SearchBar(searchQuery, pageNumber);
-
-    if (response && response.data) {
-      setSearchedCars(response.data.content);
-      setTotalPages(response.data.totalPages);
-    }
+  
+  const handleFilter = async (filter: any) => {
+    await setFiltered(filter)
+    setFilterFlag(true)
   };
 
   useEffect(() => {
+
     const fetchCars = async () => {
-      const useCars = await allCars(pageNumber);
+      const useCars = await FilterAll(filtered, searched, pageNumber, user?.id);
       if (useCars) {
+        console.log(useCars)
         setCars(useCars.data.content);
         setTotalPages(useCars.data.totalPages);
+        setFilterFlag(false)
       }
     };
     fetchCars();
-  }, [pageNumber]);
+  }, [pageNumber, filterFlag]);
 
   const handlePageChange = (pageNumber: number) => {
     setPageNumber(pageNumber);
@@ -108,13 +109,13 @@ const Comprar = () => {
           </div>
           <form
             className="flex w-80 top-0 left-24 self-start absolute"
-            onSubmit={handleSubmit(handleSearch)}
+            onSubmit={handleSubmit(handleFilter)}
           >
             <Input
               placeholder="pesquisar..."
               className="rounded-none"
               id="search"
-              {...register("search")}
+              onChange={(e) => {setSearched(e.target.value)}}
             ></Input>
             <Button className="rounded-none bg-[#64BCED] hover:bg-[#4baee4]">
               <Search />

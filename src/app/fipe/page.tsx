@@ -1,13 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthContext } from "@/contexts/authContext";
-import registrarVeiculo from "@/services/APIs/vehicleAuthentication";
 import { useContext, useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
-import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils"
 import {

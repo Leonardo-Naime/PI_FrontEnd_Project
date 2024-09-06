@@ -18,11 +18,11 @@ import { cn } from "@/lib/utils";
 import AllBrands from "@/services/APIs/allBrands";
 
 const OpenedFilter = ({onFilter}:any) => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
   const [openBrand, setOpenBrand] = useState(false)
   const [brandValue, setBrandValue] = useState("")
   const [brands, setBrands] = useState<any[]>([])
-  const [brandId, setBrandId] = useState<string>()
+  const [brandName, setBrandName] = useState<string>()
   const [dataLoaded, setDataLoaded] = useState<boolean>(false)
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const OpenedFilter = ({onFilter}:any) => {
 
   const handleFilter = (data:any) => {
     onFilter(data)
+    console.log(brandName)
   }
 
   return (
@@ -55,7 +56,7 @@ const OpenedFilter = ({onFilter}:any) => {
                 <Input
                   className="w-32"
                   id="mixyear"
-                  {...register("mixyear")}
+                  {...register("minyear")}
                   placeholder="De"
                   inputMode="numeric"
                   pattern="[0-9]{1,3}(.[0-9]{2})?"
@@ -143,7 +144,7 @@ const OpenedFilter = ({onFilter}:any) => {
                  className="w-56 justify-between bg-white"
                >
                  {brandValue
-                   ? brands.find((brands) => brands.codigo === brandValue)?.nome
+                   ? brands.find((brands) => brands.nome === brandValue)?.nome
                    : "Selecionar marca..."}
                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                </Button>
@@ -157,13 +158,14 @@ const OpenedFilter = ({onFilter}:any) => {
                      {brands.map((brands, index) => (
                        <CommandItem
                          key={index}
-                         value={brands.codigo}
+                         value={brands.nome}
                          onSelect={(currentValue) => {
+                          setValue('marca', currentValue)
                            setBrandValue(
                              currentValue === brandValue ? "" : currentValue
                            );
                            setDataLoaded(false)
-                           setBrandId(currentValue);
+                           setBrandName(currentValue);
                            setOpenBrand(false);
                          }}
                        >
