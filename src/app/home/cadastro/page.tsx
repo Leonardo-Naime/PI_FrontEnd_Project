@@ -11,7 +11,20 @@ import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-
+// key={index}
+//                          value={brands.nome}
+//                          onSelect={(currentValue) => {
+//                           if (currentValue === "") {
+//                             setBrandValue("");
+//                             setValue('marca', "");
+//                           } else {
+//                             setBrandValue(currentValue);
+//                             setValue('marca', currentValue)
+//                           }
+//                            setDataLoaded(false)
+//                            setBrandName(currentValue);
+//                            setOpenBrand(false);
+//                          }}
 const Cadastro = () => {
     const router = useRouter();
     const { register, handleSubmit, watch, formState: { errors }} = useForm();

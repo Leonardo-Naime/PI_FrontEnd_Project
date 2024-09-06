@@ -172,7 +172,7 @@ const OpenedFilter = ({onFilter}:any) => {
                          <Check
                            className={cn(
                              "mr-2 h-4 w-4",
-                             brandValue === brands.codigo
+                             brandValue === brands.nome
                                ? "opacity-100"
                                : "opacity-0"
                            )}
