@@ -57,6 +57,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import UsersLikeReq from "@/services/APIs/allLikes";
+import { Session, Chatbox } from "@talkjs/react";
 
 type Car = {
   ano: string;
@@ -183,6 +184,14 @@ const BuyCar = () => {
         <Header></Header>
       </div>
       <div>
+      <div className="py-10">
+
+      <Session appId="tAr0Hcch" userId="sample_user_alice">
+        <Chatbox conversationId="sample_conversation" 
+        style={{ width: "100%", height: "500px" }}
+        />
+      </Session>
+      </div>
         {Car?.imageUrl && (
           <div className="flex w-full h-screen">
             <div className="w-1/2 h-full relative">
