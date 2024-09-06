@@ -57,6 +57,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import UsersLikeReq from "@/services/APIs/allLikes";
+import { Session, Chatbox } from "@talkjs/react";
+import Talk from "talkjs";
+import Message from "talkjs";
+import { useCallback } from "react";
 
 type Car = {
   ano: string;
@@ -105,6 +109,7 @@ const BuyCar = () => {
   const [textareaValue, setTextareaValue] = useState();
   const [numValue, setNumValue] = useState();
   const [users, setUsers] = useState<User[]>([]);
+  const [chatOn, setChatOn] = useState(false);
 
   const handleClick = async () => {
     if (user?.id === Car?.user.id) {
@@ -160,6 +165,18 @@ const BuyCar = () => {
       console.error("Error deleting vehicle:", error);
     }
   };
+
+  const syncUser = useCallback(
+    () =>
+      new Talk.User({
+        id: "nina",
+        name: "Nina",
+        email: "nina@example.com",
+        photoUrl: "https://talkjs.com/new-web/avatar-7.jpg",
+        welcomeMessage: "Hi!",
+      }),
+    []
+  );
 
   useEffect(() => {
     const FetchUsers = async () => {
@@ -256,7 +273,27 @@ const BuyCar = () => {
           </div>
           <div></div>
           <Card className="border-solid rounded-lg border-4 border-gray-300  space-y-10  bg-[EEEEE]">
-            <CardTitle className="p-5 flex justify-center">
+                {chatOn ? (
+                  <div className="pt-3">
+                  <Session appId="tAr0Hcch" userId="sample_user_sebastian">
+                  <Chatbox conversationId="sample_conversation" 
+                  style={{ width: "500px", height: "500px" }}
+                  />
+                </Session>
+                <div className="flex justify-center py-3">
+                <Button
+                onClick={() => {
+                  setChatOn(false);
+                }}
+                className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}
+                >
+                {"Voltar"}
+                </Button>
+                  </div>
+                  </div>
+                ) : (
+                  <div>
+                  <CardTitle className="p-5 flex justify-center">
               Entre em contato!
             </CardTitle>
             <CardContent className="flex flex-col justify-center items-center">
@@ -277,13 +314,13 @@ const BuyCar = () => {
                                       height={400}
                                       src={object.fotoDePerfil}
                                       alt="FotoDePerfil"
-                                    />
-                                  ) : (
-                                    <div className="w-10 h-10 rounded-full bg-[#64BCED] items-center flex justify-center">
+                                      />
+                                    ) : (
+                                      <div className="w-10 h-10 rounded-full bg-[#64BCED] items-center flex justify-center">
                                       <User
                                         className="w-5 h-5 rounded-full bg-transparent"
                                         color="white"
-                                      ></User>
+                                        ></User>
                                     </div>
                                   )}
                                 </div>
@@ -292,8 +329,10 @@ const BuyCar = () => {
                               <div className="mr-10">
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                    <Button className="bg-[#64BCED] h-6 rounded-lg">
-                                      Envie uma mensagem!
+                                    <Button className="bg-[#64BCED] h-6 rounded-lg" onClick={() => {
+                                      setChatOn(true);
+                                    }}>
+                                      Enviar mensagem
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent className="bg-white p-0">
@@ -306,53 +345,60 @@ const BuyCar = () => {
                         ))}
                       </div>
                     </ScrollArea>
+                    <div className="flex justify-center pt-3">
                     <Button
                       onClick={handleClick}
                       className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-red-900`}
-                    >
+                      >
                       <Trash2 className="" style={{ marginRight: 4 }} />{" "}
                       {"Excluir anúncio"}
                     </Button>
+                    </div>
                   </div>
                 ) : (
                   <div>
                     {isFavorited ? (
                       <Button
-                        onClick={handleClick}
-                        className={`transition-transform transform bg-blue-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-blue-600`}
+                      onClick={handleClick}
+                      className={`transition-transform transform bg-blue-500 text-white px-4 py-2 rounded-full animate-out hover:scale-105 hover:bg-blue-600`}
                       >
                         <Heart className="" style={{ marginRight: 4 }} />{" "}
                         {"Favoritar"}
                       </Button>
                     ) : (
-                      <div className="items-center space-y-2 flex flex-col">
-                        {showChatButton && (
+                      <div className="items-center space-y-20 pt-12 flex flex-col">
+                        {/* {showChatButton && (
                           <div className="flex flex-col space-y-2">
                             <div>
                               <Input
                                 placeholder="Envie sua proposta"
                                 onChange={handleTextareaChange}
                                 value={textareaValue}
-                              ></Input>
+                                ></Input>
                               <Input
                                 placeholder="Digite seu numero"
                                 onChange={handleNumChange}
                                 value={numValue}
-                              ></Input>
+                                ></Input>
                             </div>
                             <Button
                               type="button"
                               onClick={handleSendMessage}
                               className="bg-green-400 hover:bg-green-600"
-                            >
+                              >
                               Enviar mensagem
                             </Button>
                           </div>
-                        )}
-                        <Button
+                            )} */}
+                            <Button className="bg-[#64BCED] h-6 rounded-lg" onClick={() => {
+                                      setChatOn(true);
+                                    }}>
+                                      Enviar mensagem
+                                    </Button>
+                            <Button
                           onClick={handleClick}
                           className={`transition-transform transform bg-red-500 text-white px-4 py-2 rounded-full animate-in hover:scale-105 hover:bg-red-700`}
-                        >
+                          >
                           <HeartOff style={{ marginRight: 4 }} />{" "}
                           {"Desfavoritar"}
                         </Button>
@@ -362,9 +408,11 @@ const BuyCar = () => {
                 )}
               </div>
             </CardContent>
+            </div>
+            )}
           </Card>
         </div>
-      </div>
+        </div>
       <div>
         <DefaultFooter></DefaultFooter>
       </div>
